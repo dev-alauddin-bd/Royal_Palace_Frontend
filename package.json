@@ -73,12 +73,6 @@
     "baseline-browser-mapping": "^2.9.17",
     "typescript": "^5"
   },
-  "pnpm": {
-    "overrides": {
-      "@types/react": "19.2.2",
-      "@types/react-dom": "19.2.2"
-    }
-  },
   "overrides": {
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3"
