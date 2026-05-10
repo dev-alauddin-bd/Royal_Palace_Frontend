@@ -8,7 +8,7 @@ import { useGetAllTeamMembersQuery } from '@/redux/features/team/teamApi';
 
 export default function TeamSection() {
   const { data: teamData, isLoading } = useGetAllTeamMembersQuery(undefined);
-  const teamMembers = teamData?.data || [];
+  const teamMembers = Array.isArray(teamData?.data?.data) ? teamData.data.data : [];
 
   if (isLoading) {
     return (

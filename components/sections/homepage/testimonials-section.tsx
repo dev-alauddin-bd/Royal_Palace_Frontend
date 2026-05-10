@@ -54,7 +54,7 @@ const TestimonialsSection = () => {
     page,
     limit,
   });
-  const testimonials = testimonialsData?.data || [];
+  const testimonials = Array.isArray(testimonialsData?.data?.data) ? testimonialsData.data.data : [];
 
   // Pagination Handlers with direction set
   const handleNext = () => {
@@ -143,7 +143,7 @@ const TestimonialsSection = () => {
                     <div className="w-20 h-20 rounded-none overflow-hidden border border-royal-gold/30">
                       <Image
                         src={testimonial.userImage || '/placeholder.svg'}
-                        alt={testimonial.userName}
+                        alt={testimonial.userName || 'User avatar'}
                         width={80}
                         height={80}
                         className="object-cover"
@@ -186,7 +186,7 @@ const TestimonialsSection = () => {
           <div className="flex-1 h-px bg-white/10 max-w-sm relative">
             <div 
               className="absolute h-full bg-royal-gold transition-all duration-500" 
-              style={{ width: `${(page / (testimonialsData?.meta?.totalPages || 1)) * 100}%` }}
+              style={{ width: `${(page / (testimonialsData?.data?.meta?.totalPages || 1)) * 100}%` }}
             />
           </div>
 

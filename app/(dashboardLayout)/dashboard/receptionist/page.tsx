@@ -11,6 +11,7 @@ import { Calendar, Users, Bed } from 'lucide-react';
 import { Cell, Tooltip, Legend, BarChart, XAxis, YAxis, Bar } from 'recharts';
 import { useGetDashboardDataQuery } from '@/redux/features/dashboard/dashboardApi';
 import { IBooking } from '@/types/booking.interface';
+import Loader from '@/components/shared/Loader';
 
 // ===== 🔹 Interface for Stat Card Data =====
 interface IStatCardData {
@@ -42,14 +43,7 @@ function ReceptionistDashboard() {
 
   // ===== 🔹 Loading state UI =====
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">Loading ...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   // ===== 🔹 Extract stats and bookings data =====

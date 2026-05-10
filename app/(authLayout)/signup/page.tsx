@@ -13,6 +13,7 @@ import { useSignUpUserMutation } from '@/redux/features/auth/authApi';
 import { useAppDispatch } from '@/redux/hooks';
 import { setUser } from '@/redux/features/auth/authSlice';
 import { Crown, User, Mail, Lock, Phone, ArrowLeft, ArrowRight } from 'lucide-react';
+import Loader from '@/components/shared/Loader';
 
 interface SignupFormData {
   name: string;
@@ -43,12 +44,14 @@ export default function SignupPage() {
       reset();
       router.push('/');
     } catch (err: any) {
-      toast.error(err?.message || 'An unexpected error occurred');
+      const errorMessage = err?.data?.message || err?.message || 'An unexpected error occurred';
+      toast.error(errorMessage);
     }
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-royal-obsidian">
+      {isLoading && <Loader />}
       {/* Background with luxury pattern */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/85 z-10" />

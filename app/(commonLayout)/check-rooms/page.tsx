@@ -12,6 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/shared/pagination';
+import Loader from '@/components/shared/Loader';
 
 interface IRoom {
   _id: string;
@@ -76,16 +77,7 @@ export default function CheckRooms() {
 
   // === Loading State ===
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">
-            Loading rooms...
-          </p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

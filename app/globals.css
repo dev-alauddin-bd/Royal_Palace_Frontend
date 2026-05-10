@@ -12,6 +12,7 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: var(--font-noto-serif);
+  --font-krona: var(--font-krona-one);
 
   /* === Sidebar-specific colors === */
   --color-sidebar-ring: var(--sidebar-ring);
@@ -168,7 +169,7 @@
 
 @layer utilities {
   .royal-button {
-    @apply bg-transparent text-royal-gold font-bold tracking-[0.3em] uppercase text-[11px];
+    @apply font-krona bg-transparent text-royal-gold font-bold tracking-[0.3em] uppercase text-[11px];
     @apply px-10 h-14 flex items-center justify-center transition-all duration-500 rounded-none relative overflow-hidden;
     @apply border border-royal-gold/50 hover:border-royal-gold hover:text-royal-blue;
     @apply before:content-[''] before:absolute before:inset-0 before:bg-royal-gold before:translate-y-full before:transition-transform before:duration-500 before:-z-10 hover:before:translate-y-0;
@@ -176,7 +177,7 @@
   }
 
   .royal-button-solid {
-    @apply bg-royal-gold text-royal-blue font-bold tracking-[0.3em] uppercase text-[11px];
+    @apply font-krona bg-royal-gold text-royal-blue font-bold tracking-[0.3em] uppercase text-[11px];
     @apply px-10 h-14 flex items-center justify-center transition-all duration-500 rounded-none;
     @apply hover:bg-royal-gold-dark hover:text-white shadow-xl;
   }
@@ -190,7 +191,7 @@
   }
 
   .royal-label {
-    @apply text-[10px] font-bold uppercase tracking-[0.4em] text-royal-gold;
+    @apply font-krona text-[10px] font-bold uppercase tracking-[0.4em] text-royal-gold;
   }
 
   .glass-panel {

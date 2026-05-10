@@ -8,6 +8,7 @@ import TeamSection from '@/components/sections/homepage/team-section';
 
 import { ContactUs } from '@/components/sections/homepage/contact-us-section';
 import { FAQSection } from '@/components/sections/homepage/faq-section';
+import StatsSection from '@/components/sections/homepage/stats-section';
 
 export default function Home() {
   return (
@@ -17,6 +18,9 @@ export default function Home() {
 
       {/* ===== About Us Section ===== */}
       <AboutUsSection />
+
+      {/* ===== Statistics Section ===== */}
+      <StatsSection />
 
       {/* ===== Rooms & Suites Section ===== */}
       <RoomAndSuites />

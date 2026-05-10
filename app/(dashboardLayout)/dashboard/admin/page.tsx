@@ -1,4 +1,5 @@
 "use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
@@ -9,9 +10,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
   Area,
   AreaChart,
 } from "recharts"
@@ -25,35 +23,29 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
+  Crown,
 } from "lucide-react"
 
 import { useGetDashboardDataQuery } from "@/redux/features/dashboard/dashboardApi"
 import { IBooking } from "@/types/booking.interface"
+import Loader from "@/components/shared/Loader"
 
 function AdminDashboard() {
   const { data: dashboardData, isLoading } = useGetDashboardDataQuery(undefined, {
     refetchOnMountOrArgChange: true,
   })
 
-  console.log(dashboardData)
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">Loading ...</p>
-        </div>
-      </div>
-    )
+    return <Loader />
   }
 
   if (!dashboardData?.success) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-2">Error Loading Dashboard</h2>
-          <p className="text-gray-600">Unable to fetch dashboard data</p>
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="glass-panel p-10 text-center max-w-md border-destructive/20">
+          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+          <h2 className="text-2xl font-serif font-bold text-white uppercase tracking-widest mb-2">Registry Error</h2>
+          <p className="text-white/60 font-light">Unable to synchronize with the royal archives. Please attempt authentication again.</p>
         </div>
       </div>
     )
@@ -70,266 +62,248 @@ function AdminDashboard() {
       avgBookingValue: 0,
       occupancyRate: "0%",
       repeatCustomers: 0,
-      newCustomers: 0
+      newCustomers: 0,
+      todaysBookings: 0
     }, 
-    bookingStatusBreakdown = [], 
+    monthlyStats = [],
     topCustomers = [], 
     recentBookings = [] 
   } = dashboardData?.data || {}
 
-  // Prepare chart data
-  const statusColors = {
-    booked: "#10b981",
-    pending: "#f59e0b",
-    cancelled: "#ef4444",
-    InitiateCancel: "#f97316",
+  // Luxury Chart Colors
+  const chartColors = {
+    gold: "#c5a021",
+    goldLight: "#e6be8a",
+    obsidian: "#0a0d12",
+    white: "#ffffff",
+    grey: "#475569"
   }
 
-  const statusData = bookingStatusBreakdown.map((item:any) => ({
-    name: item._id,
-    value: item.count,
-    color: statusColors[item._id as keyof typeof statusColors] || "#6b7280",
-  }))
+  const revenueData = monthlyStats.map((item: any) => ({
+    name: item.month,
+    amount: item.revenue,
+  }));
 
-  const revenueData = [
-    { name: "Today", amount: stats.todaysRevenue },
-    { name: "This Month", amount: stats.monthlyRevenue },
-    { name: "Total", amount: stats.totalRevenue },
-  ]
-
-  const bookingData = [
-    { name: "Today", bookings: stats.todaysBookings },
-    { name: "This Month", bookings: stats.monthlyBookings },
-    { name: "This Year", bookings: stats.yearlyBookings },
-    { name: "Total", bookings: stats.totalBookings },
-  ]
+  const bookingData = monthlyStats.map((item: any) => ({
+    name: item.month,
+    bookings: item.bookings,
+  }));
 
   const customerData = topCustomers.slice(0, 5).map((customer:any) => ({
     name: customer.name.length > 15 ? customer.name.substring(0, 15) + "..." : customer.name,
     spent: customer.totalSpent,
-    bookings: customer.bookings,
   }))
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="container mx-auto space-y-8">
-       
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Bookings</CardTitle>
-              <Calendar className="h-4 w-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalBookings}</div>
-              <p className="text-xs text-blue-100">{stats.monthlyBookings} this month</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</div>
-              <p className="text-xs text-green-100">${stats.monthlyRevenue.toLocaleString()} this month</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Booking Value</CardTitle>
-              <TrendingUp className="h-4 w-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">${stats.avgBookingValue}</div>
-              <p className="text-xs text-purple-100">Per booking average</p>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Occupancy Rate</CardTitle>
-              <Percent className="h-4 w-4" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.occupancyRate}</div>
-              <p className="text-xs text-orange-100">Current occupancy</p>
-            </CardContent>
-          </Card>
+    <div className="p-4 md:p-8 space-y-10 animate-in fade-in duration-700">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 text-royal-gold">
+            <Crown className="h-5 w-5" />
+            <span className="text-[10px] uppercase tracking-[0.4em] font-bold">Royal Management</span>
+          </div>
+          <h1 className="text-4xl font-serif font-bold text-white tracking-tight">Sovereign Overview</h1>
+          <p className="text-white/40 text-sm font-light max-w-md">Welcome back, Administrator. Here is the current state of your exquisite domain.</p>
         </div>
-
-        {/* Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Booking Status Pie Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Booking Status Distribution</CardTitle>
-              <CardDescription>Current booking status breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <PieChart>
-                  <Pie
-                    data={statusData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={({ name, percent }:any) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {statusData.map((entry:any, index:number) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-
-          {/* Revenue Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Revenue Overview</CardTitle>
-              <CardDescription>Revenue breakdown by period</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={revenueData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip formatter={(value) => [`$${value}`, "Revenue"]} />
-                  <Area type="monotone" dataKey="amount" stroke="#10b981" fill="#10b981" fillOpacity={0.3} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+        <div className="flex items-center gap-4">
+          <div className="text-right hidden md:block">
+            <p className="text-[9px] uppercase tracking-widest text-royal-gold font-bold">Current Occupancy</p>
+            <p className="text-2xl font-serif text-white">{stats.occupancyRate}</p>
+          </div>
+          <div className="h-12 w-[1px] bg-white/10 hidden md:block" />
+          <div className="text-right">
+            <p className="text-[9px] uppercase tracking-widest text-royal-gold font-bold">Today's Revenue</p>
+            <p className="text-2xl font-serif text-white">${stats.todaysRevenue.toLocaleString()}</p>
+          </div>
         </div>
+      </div>
 
-        {/* Second Charts Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Bookings Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Bookings Overview</CardTitle>
-              <CardDescription>Booking counts by period</CardDescription>
+      {/* Primary Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          { label: "Total Heritage", value: stats.totalBookings, sub: `${stats.monthlyBookings} this month`, icon: Calendar, color: "gold" },
+          { label: "Total Wealth", value: `$${stats.totalRevenue.toLocaleString()}`, sub: `$${stats.monthlyRevenue.toLocaleString()} this month`, icon: DollarSign, color: "gold" },
+          { label: "Guest Value", value: `$${stats.avgBookingValue}`, sub: "Average per stay", icon: TrendingUp, color: "gold" },
+          { label: "New Allegiances", value: stats.newCustomers, sub: "Loyal members growing", icon: Users, color: "gold" }
+        ].map((stat, i) => (
+          <Card key={i} className="glass-panel border-white/5 hover:border-royal-gold/30 transition-all duration-500 group overflow-hidden">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <span className="text-[10px] uppercase tracking-widest text-royal-gold/60 font-bold group-hover:text-royal-gold transition-colors">{stat.label}</span>
+              <stat.icon className="h-4 w-4 text-royal-gold/40 group-hover:text-royal-gold transition-colors" />
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={bookingData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="bookings" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              <div className="text-3xl font-serif font-bold text-white mb-1">{stat.value}</div>
+              <p className="text-[10px] text-white/40 font-light">{stat.sub}</p>
+              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-royal-gold group-hover:w-full transition-all duration-700" />
             </CardContent>
           </Card>
+        ))}
+      </div>
 
-          {/* Top Customers Chart */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Customers</CardTitle>
-              <CardDescription>Customers by total spending</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={customerData} layout="horizontal">
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
-                  <YAxis dataKey="name" type="category" width={100} />
-                  <Tooltip formatter={(value) => [`$${value}`, "Total Spent"]} />
-                  <Bar dataKey="spent" fill="#8b5cf6" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </div>
+      {/* Analytics Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Revenue Chart */}
+        <Card className="lg:col-span-2 glass-panel border-white/5">
+          <CardHeader>
+            <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+              <TrendingUp className="h-5 w-5 text-royal-gold" />
+              Wealth Projection
+            </CardTitle>
+            <CardDescription className="text-white/40 text-xs uppercase tracking-widest">Revenue breakdown by lunar period</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[350px] pt-4">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={chartColors.gold} stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor={chartColors.gold} stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke="rgba(255,255,255,0.3)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                  dy={10}
+                />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.3)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                  tickFormatter={(value) => `$${value}`}
+                />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: "#0f141d", border: "1px solid rgba(197, 160, 33, 0.2)", borderRadius: "0px" }}
+                  itemStyle={{ color: chartColors.gold, fontSize: "12px" }}
+                  labelStyle={{ color: "white", marginBottom: "4px" }}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="amount" 
+                  stroke={chartColors.gold} 
+                  strokeWidth={2}
+                  fillOpacity={1} 
+                  fill="url(#colorRevenue)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
 
-        {/* Customer Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Customer Analytics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Repeat Customers</span>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
-                    {stats.repeatCustomers}
-                  </Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">New Customers</span>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                    {stats.newCustomers}
-                  </Badge>
-                </div>
-                <div className="pt-2 border-t">
-                  <div className="text-sm text-gray-600">
-                    Customer Retention Rate:{" "}
-                    {((stats.repeatCustomers / (stats.repeatCustomers + stats.newCustomers)) * 100).toFixed(1)}%
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Recent Bookings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Clock className="h-5 w-5" />
-                Recent Bookings
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {recentBookings.slice(0, 4).map((booking:IBooking) => (
-                  <div key={booking._id} className="flex items-center justify-between p-3 bg-main rounded-lg">
-                    <div className="flex items-center gap-3">
-                      {booking.bookingStatus === "booked" && <CheckCircle className="h-4 w-4 text-green-500" />}
-                      {booking.bookingStatus === "pending" && <AlertCircle className="h-4 w-4 text-yellow-500" />}
-                      {booking.bookingStatus === "cancelled" && <XCircle className="h-4 w-4 text-red-500" />}
-                      {booking.bookingStatus === "InitiateCancel" && <XCircle className="h-4 w-4 text-orange-500" />}
-                      <div>
-                        <div className="font-medium text-sm">{booking.userId.name}</div>
-                        <div className="text-xs text-gray-500">{booking.userId.email}</div>
-                      </div>
+        {/* Top Patrons */}
+        <Card className="glass-panel border-white/5">
+          <CardHeader>
+            <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+              <Crown className="h-5 w-5 text-royal-gold" />
+              Elite Patrons
+            </CardTitle>
+            <CardDescription className="text-white/40 text-xs uppercase tracking-widest">Most distinguished guests</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-6">
+              {topCustomers.slice(0, 5).map((customer: any, i: number) => (
+                <div key={i} className="flex items-center justify-between group">
+                  <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 border border-royal-gold/20 flex items-center justify-center text-royal-gold font-serif text-sm group-hover:border-royal-gold transition-colors">
+                      {i + 1}
                     </div>
-                    <div className="text-right">
-                      <div className="font-medium text-sm">${booking.totalAmount}</div>
-                      <Badge
-                        variant="outline"
-                        className={`text-xs ${
-                          booking.bookingStatus === "booked"
-                            ? "border-green-200 text-green-700"
-                            : booking.bookingStatus === "pending"
-                              ? "border-yellow-200 text-yellow-700"
-                              : "border-red-200 text-red-700"
-                        }`}
-                      >
-                        {booking.bookingStatus}
-                      </Badge>
+                    <div>
+                      <p className="text-sm font-medium text-white group-hover:text-royal-gold transition-colors">{customer.name}</p>
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest font-light">{customer.bookings} Bookings</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+                  <div className="text-right">
+                    <p className="text-sm font-serif text-white">${customer.totalSpent.toLocaleString()}</p>
+                    <div className="h-[1px] w-full bg-royal-gold/20 mt-1" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Secondary Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
+        {/* Recent Activity */}
+        <Card className="glass-panel border-white/5">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+                <Clock className="h-5 w-5 text-royal-gold" />
+                Recent Registry
+              </CardTitle>
+              <CardDescription className="text-white/40 text-xs uppercase tracking-widest">Latest stay requests</CardDescription>
+            </div>
+            <button className="text-[10px] text-royal-gold uppercase tracking-[0.3em] font-bold hover:text-white transition-colors">View All</button>
+          </CardHeader>
+          <CardContent className="pt-4">
+            <div className="space-y-4">
+              {recentBookings.slice(0, 5).map((booking: IBooking) => (
+                <div key={booking._id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 hover:border-royal-gold/20 transition-all group">
+                  <div className="flex items-center gap-4">
+                    <div className={`h-2 w-2 rounded-full ${
+                      booking.bookingStatus === "booked" ? "bg-green-500" : 
+                      booking.bookingStatus === "pending" ? "bg-amber-500" : "bg-red-500"
+                    }`} />
+                    <div>
+                      <p className="text-sm font-medium text-white group-hover:text-royal-gold transition-colors">{booking.userId.name}</p>
+                      <p className="text-[10px] text-white/40 uppercase tracking-widest">{booking.userId.email}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-serif text-white">${booking.totalAmount}</p>
+                    <Badge variant="outline" className={`text-[8px] uppercase tracking-widest rounded-none border-royal-gold/30 text-royal-gold h-5`}>
+                      {booking.bookingStatus}
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Heritage Metrics */}
+        <Card className="glass-panel border-white/5">
+          <CardHeader>
+            <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+              <BarChart className="h-5 w-5 text-royal-gold" />
+              Heritage Metrics
+            </CardTitle>
+            <CardDescription className="text-white/40 text-xs uppercase tracking-widest">Operational performance</CardDescription>
+          </CardHeader>
+          <CardContent className="h-[300px] pt-4">
+             <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={bookingData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis 
+                  dataKey="name" 
+                  stroke="rgba(255,255,255,0.3)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                />
+                <YAxis 
+                  stroke="rgba(255,255,255,0.3)" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                />
+                <Tooltip 
+                  cursor={{ fill: "rgba(255,255,255,0.05)" }}
+                  contentStyle={{ backgroundColor: "#0f141d", border: "1px solid rgba(197, 160, 33, 0.2)", borderRadius: "0px" }}
+                  itemStyle={{ color: chartColors.gold, fontSize: "12px" }}
+                />
+                <Bar dataKey="bookings" fill={chartColors.gold} radius={[0, 0, 0, 0]} barSize={20} />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

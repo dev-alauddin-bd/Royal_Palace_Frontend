@@ -11,6 +11,7 @@ import {
 } from '@/redux/features/team/teamApi';
 import toast, { Toaster } from 'react-hot-toast';
 import TeamFormModal from '@/components/modal/team-form-modal';
+import Loader from '@/components/shared/Loader';
 
 export default function TeamManagementPage() {
   const { data: teamData, isLoading } = useGetAllTeamMembersQuery(undefined);
@@ -48,16 +49,7 @@ export default function TeamManagementPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-royal-gold border-t-transparent rounded-full animate-spin" />
-          <p className="text-royal-gold font-serif font-bold tracking-widest uppercase animate-pulse">
-            Summoning the Royal Team...
-          </p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

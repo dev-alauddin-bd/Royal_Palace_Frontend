@@ -3,7 +3,6 @@ import Link from 'next/link';
 import RoomImageGallery from '@/components/sections/roomDetailsPage/room-details-top-section';
 import DateRangeCalendar from '@/components/sections/roomDetailsPage/date-range-calendar-section';
 import RoomReviewsSection from '@/components/sections/roomDetailsPage/room-reviews-section';
-import PrivateRoute from '@/privateRoute/privateRoute';
 
 // Server-side component
 export default async function RoomDetailsPage({params}: {params: Promise<{ id: string }>;
@@ -36,7 +35,6 @@ export default async function RoomDetailsPage({params}: {params: Promise<{ id: s
 
   // ===== Return JSX =====
   return (
-    <PrivateRoute>
       <div className="min-h-screen text-white overflow-x-hidden">
         {/* ===== Title Section ===== */}
         <div className="flex items-center justify-center py-10 px-4 text-center flex-wrap">
@@ -135,8 +133,46 @@ export default async function RoomDetailsPage({params}: {params: Promise<{ id: s
           <div className="pt-12">
             <RoomReviewsSection roomId={id as string} />
           </div>
+
+          {/* ===== Related Rooms Section ===== */}
+          <div className="pt-24 border-t border-royal-gold/10">
+            <div className="flex items-center justify-between mb-12">
+              <h2 className="text-3xl font-serif font-bold text-foreground">
+                Related <span className="text-royal-gold italic">Suites</span>
+              </h2>
+              <Link href="/rooms" className="text-royal-gold text-[10px] font-bold uppercase tracking-[0.25em] hover:opacity-70 transition-opacity">
+                View All Rooms
+              </Link>
+            </div>
+            {/* Simple related rooms logic - can be expanded to fetch real related data */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                  <div className="absolute bottom-6 left-6 right-6 z-20">
+                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Luxury</p>
+                     <h4 className="text-white font-serif text-xl mb-4">Presidential Suite</h4>
+                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
+                  </div>
+               </div>
+               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                  <div className="absolute bottom-6 left-6 right-6 z-20">
+                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Executive</p>
+                     <h4 className="text-white font-serif text-xl mb-4">Panoramic Deluxe</h4>
+                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
+                  </div>
+               </div>
+               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                  <div className="absolute bottom-6 left-6 right-6 z-20">
+                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Family</p>
+                     <h4 className="text-white font-serif text-xl mb-4">Royal Penthouse</h4>
+                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
+                  </div>
+               </div>
+            </div>
+          </div>
         </div>
       </div>
-    </PrivateRoute>
   );
 }

@@ -12,6 +12,7 @@ import Link from 'next/link';
 import Pagination from '@/components/shared/pagination';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
+import RoomSkeleton from '@/components/shared/room-skeleton';
 
 interface IRoom {
   _id: string;
@@ -39,6 +40,8 @@ function useDebounce<T>(value: T, delay: number): T {
 function RoomsContent() {
   const [tab, setTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sort, setSort] = useState('createdAt'); // Default sort
+  const [priceRange, setPriceRange] = useState('all');
   const [page, setPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   
@@ -51,16 +54,19 @@ function RoomsContent() {
   const { data, isLoading } = useFilterAllRoomsQuery({
     searchTerm: debouncedSearchTerm,
     type: tab === 'all' ? undefined : tab,
+    sort,
+    minPrice: priceRange !== 'all' ? Number(priceRange.split('-')[0]) : undefined,
+    maxPrice: priceRange !== 'all' ? Number(priceRange.split('-')[1]) : undefined,
     checkInDate: urlCheckIn || undefined,
     checkOutDate: urlCheckOut || undefined,
     adults: urlAdults ? Number(urlAdults) : undefined,
     children: urlChildren ? Number(urlChildren) : undefined,
-    limit: 6,
+    limit: 8,
     page,
   });
 
-  const rooms = data?.data?.data ?? [];
-  const totalPages = data?.meta?.totalPages ?? 1;
+  const rooms = Array.isArray(data?.data?.data) ? data.data.data : [];
+  const totalPages = data?.data?.meta?.totalPages ?? 1;
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -74,13 +80,13 @@ function RoomsContent() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="flex flex-col items-center space-y-6">
-          <div className="w-16 h-16 border-2 border-royal-gold border-t-transparent animate-spin" />
-          <p className="text-royal-gold font-serif font-bold uppercase tracking-[0.3em] text-sm">
-            Curating your experience...
-          </p>
+      <div className="min-h-screen container mx-auto px-4 py-8 md:py-12">
+        <div className="flex items-center justify-center px-4 text-center flex-wrap mb-16">
+          <div className="h-px bg-royal-gold/20 w-20 sm:w-32 mr-6" />
+          <h2 className="royal-label">Loading Excellence</h2>
+          <div className="h-px bg-royal-gold/20 w-20 sm:w-32 ml-6" />
         </div>
+        <RoomSkeleton />
       </div>
     );
   }
@@ -137,12 +143,38 @@ function RoomsContent() {
           </TabsList>
         </Tabs>
 
-        <Input
-          placeholder="SEARCH SUITES..."
-          value={searchTerm}
-          onChange={onSearchChange}
-          className="w-full md:w-80 bg-royal-obsidian/5 border-royal-gold/20 rounded-none h-12 text-[10px] tracking-widest placeholder:text-foreground/30 focus-visible:ring-0 focus-visible:border-royal-gold"
-        />
+        <div className="flex flex-wrap items-center gap-4 w-full md:w-auto">
+           {/* Price Range */}
+           <select
+            value={priceRange}
+            onChange={(e) => { setPriceRange(e.target.value); setPage(1); }}
+            className="bg-royal-obsidian/5 border border-royal-gold/20 px-4 py-3 text-[10px] tracking-widest text-foreground/70 uppercase font-bold outline-none focus:border-royal-gold transition-colors"
+           >
+              <option value="all">PRICE: ALL</option>
+              <option value="0-100">$0 - $100</option>
+              <option value="100-300">$100 - $300</option>
+              <option value="300-1000">$300 - $1000</option>
+              <option value="1000-5000">$1000+</option>
+           </select>
+
+           {/* Sort By */}
+           <select
+            value={sort}
+            onChange={(e) => { setSort(e.target.value); setPage(1); }}
+            className="bg-royal-obsidian/5 border border-royal-gold/20 px-4 py-3 text-[10px] tracking-widest text-foreground/70 uppercase font-bold outline-none focus:border-royal-gold transition-colors"
+           >
+              <option value="createdAt">SORT: LATEST</option>
+              <option value="price">PRICE: LOW TO HIGH</option>
+              <option value="-price">PRICE: HIGH TO LOW</option>
+           </select>
+
+           <Input
+            placeholder="SEARCH SUITES..."
+            value={searchTerm}
+            onChange={onSearchChange}
+            className="w-full md:w-64 bg-royal-obsidian/5 border-royal-gold/20 rounded-none h-12 text-[10px] tracking-widest placeholder:text-foreground/30 focus-visible:ring-0 focus-visible:border-royal-gold"
+          />
+        </div>
       </div>
 
       {/* ===== Rooms Grid with Motion ===== */}
@@ -228,8 +260,8 @@ function RoomsContent() {
 export default function RoomsPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-16 h-16 border-2 border-royal-gold border-t-transparent animate-spin" />
+      <div className="min-h-screen container mx-auto px-4 py-8 md:py-12">
+        <RoomSkeleton />
       </div>
     }>
       <RoomsContent />

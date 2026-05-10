@@ -14,6 +14,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectCurrentUser } from '@/redux/features/auth/authSlice';
 import { useGetPaymentsByUserIdQuery } from '@/redux/features/payment/paymentApi';
+import Loader from '@/components/shared/Loader';
 
 const statusColorMap: Record<string, string> = {
   completed: 'bg-emerald-600',
@@ -31,14 +32,7 @@ export default function UserPayments() {
   const { data: paymentsData, isLoading } = useGetPaymentsByUserIdQuery(id!);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">Loading ...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

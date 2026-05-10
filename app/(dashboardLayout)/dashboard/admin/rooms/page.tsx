@@ -21,6 +21,7 @@ import {
 } from '@/redux/features/room/room.api';
 import toast, { Toaster } from 'react-hot-toast';
 import { IRoom } from '@/types/room.interface';
+import Loader from '@/components/shared/Loader';
 
 export default function RoomsPage() {
   const { data: roomsData, isLoading } = useFindAllRoomsQuery(undefined);
@@ -52,16 +53,7 @@ export default function RoomsPage() {
   };
   // === Loading State ===
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">
-            Loading rooms...
-          </p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
   return (
     <div className="space-y-6">

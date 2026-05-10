@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Loader from '@/components/shared/Loader';
 
 // ========== 🧾 Types ==========
 interface Room {

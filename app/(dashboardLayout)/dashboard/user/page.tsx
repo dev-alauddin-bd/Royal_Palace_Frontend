@@ -6,6 +6,16 @@ import { Badge } from '@/components/ui/badge';
 import { Bed, Calendar, DollarSign } from 'lucide-react';
 import { useGetDashboardDataQuery } from '@/redux/features/dashboard/dashboardApi';
 import { IBooking } from '@/types/booking.interface';
+import Loader from '@/components/shared/Loader';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 
 export interface IStat {
   title: string;
@@ -36,14 +46,7 @@ function GuestDashboard() {
   );
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">Loading ...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   const stats = dashboardData?.data?.stats ?? [];
@@ -85,6 +88,58 @@ function GuestDashboard() {
           );
         })}
       </div>
+
+      {/* ===== 🔹 Spending Chart Section ===== */}
+      <Card className="bg-royal-obsidian/5 border border-royal-gold/10 rounded-none shadow-2xl overflow-hidden mb-12">
+        <CardHeader className="border-b border-royal-gold/10 bg-white/5 py-6">
+          <CardTitle className="text-xl font-serif font-bold text-foreground flex items-center gap-3">
+            <div className="w-1.5 h-1.5 bg-royal-gold rotate-45" />
+            Spending History
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-10 pb-6">
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dashboardData?.data?.spendingHistory || []}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
+                <XAxis 
+                  dataKey="month" 
+                  stroke="#ffffff40" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                  tick={{ fill: '#ffffff60', fontWeight: 'bold' }}
+                />
+                <YAxis 
+                  stroke="#ffffff40" 
+                  fontSize={10} 
+                  tickLine={false} 
+                  axisLine={false}
+                  tickFormatter={(value) => `$${value}`}
+                  tick={{ fill: '#ffffff60', fontWeight: 'bold' }}
+                />
+                <Tooltip 
+                  cursor={{ fill: '#ffffff05' }}
+                  contentStyle={{ 
+                    backgroundColor: '#0a0a0a', 
+                    border: '1px solid rgba(191,147,16,0.2)',
+                    borderRadius: '0px',
+                    fontSize: '10px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em'
+                  }}
+                />
+                <Bar 
+                  dataKey="amount" 
+                  fill="#bf9310" 
+                  radius={[2, 2, 0, 0]}
+                  barSize={40}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* ===== 🔹 Recent Bookings Section ===== */}
       <Card className="bg-royal-obsidian/5 border border-royal-gold/10 rounded-none shadow-2xl overflow-hidden mb-12">

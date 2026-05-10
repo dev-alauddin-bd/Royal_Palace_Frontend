@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Noto_Serif } from 'next/font/google';
+import { Noto_Serif, Krona_One } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import ReduxProvider from './reduxProvider';
@@ -8,6 +8,12 @@ import SmoothScroll from '@/components/SmoothScroll';
 const notoSerif = Noto_Serif({
   variable: '--font-noto-serif',
   subsets: ['latin'],
+});
+
+const kronaOne = Krona_One({
+  variable: '--font-krona-one',
+  subsets: ['latin'],
+  weight: '400',
 });
 export const metadata: Metadata = {
   title: 'Royal Place',
@@ -21,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${notoSerif.variable}  antialiased`}>
+      <body className={`${notoSerif.variable} ${kronaOne.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

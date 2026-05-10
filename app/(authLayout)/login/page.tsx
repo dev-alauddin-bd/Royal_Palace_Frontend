@@ -11,6 +11,7 @@ import { useLoginUserMutation } from "@/redux/features/auth/authApi"
 import { setUser } from "@/redux/features/auth/authSlice"
 import { useAppDispatch } from "@/redux/hooks"
 import { Crown, Mail, Lock, ArrowRight, UserCog, UserCircle, ShieldCheck } from "lucide-react"
+import Loader from "@/components/shared/Loader"
 
 interface LoginFormData {
   email: string
@@ -40,7 +41,8 @@ export default function LoginPage() {
       reset()
       router.replace(redirectTo)
     } catch (err: any) {
-      toast.error(err?.message || "An unexpected error occurred")
+      const errorMessage = err?.data?.message || err?.message || "An unexpected error occurred"
+      toast.error(errorMessage)
     }
   }
 
@@ -50,16 +52,16 @@ export default function LoginPage() {
 
     switch (role) {
       case "guest":
-        email = process.env.NEXT_PUBLIC_GUEST_EMAIL || "guest@royalpalace.com"
-        password = process.env.NEXT_PUBLIC_GUEST_PASSWORD || "Guest@123"
+        email = process.env.NEXT_PUBLIC_GUEST_EMAIL || "guest@example.com"
+        password = process.env.NEXT_PUBLIC_GUEST_PASSWORD || "guest123"
         break
       case "receptionist":
         email = process.env.NEXT_PUBLIC_RECEPTIONIST_EMAIL || "reception@royalpalace.com"
-        password = process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD || "Reception@123"
+        password = process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD || "reception123"
         break
       case "admin":
         email = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@royalpalace.com"
-        password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123"
+        password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
         break
     }
 
@@ -70,12 +72,13 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-royal-obsidian">
+      {isLoading && <Loader />}
       {/* Background with luxury pattern */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-black/80 z-10" />
-        <img 
-          src="/images/Hero-Banner.webp" 
-          alt="Luxury background" 
+        <img
+          src="/images/Hero-Banner.webp"
+          alt="Luxury background"
           className="w-full h-full object-cover opacity-30"
         />
       </div>
@@ -150,7 +153,7 @@ export default function LoginPage() {
                 <span className="text-[9px] text-royal-gold/40 uppercase tracking-widest font-bold whitespace-nowrap">Testing Protocols</span>
                 <div className="h-px flex-1 bg-royal-gold/10"></div>
               </div>
-              
+
               <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
