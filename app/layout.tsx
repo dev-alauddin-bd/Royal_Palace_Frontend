@@ -3,6 +3,7 @@ import { Noto_Serif } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
 import ReduxProvider from './reduxProvider';
+import SmoothScroll from '@/components/SmoothScroll';
 
 const notoSerif = Noto_Serif({
   variable: '--font-noto-serif',
@@ -28,8 +29,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ReduxProvider>
-       
-            {children}
+            <SmoothScroll>
+              {children}
+            </SmoothScroll>
           </ReduxProvider>
         </ThemeProvider>
       </body>

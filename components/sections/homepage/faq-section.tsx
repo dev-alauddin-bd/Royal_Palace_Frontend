@@ -31,21 +31,20 @@ export function FAQSection() {
                     className="mb-20"
                 >
                     <div className="flex items-center justify-center mb-8">
-                        <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 mr-6"></div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 mr-6"></div>
                         <div className="flex items-center">
-                            <HelpCircle className="w-6 h-6 text-[#bf9310] mr-3" />
-                            <h2 className="title text-base md:text-sm font-medium tracking-[0.2em] uppercase">
+                            <HelpCircle className="w-6 h-6 text-royal-gold mr-3" />
+                            <h2 className="text-royal-gold text-base md:text-sm font-medium tracking-[0.2em] uppercase">
                                 Frequently Asked Questions
                             </h2>
-                            <HelpCircle className="w-6 h-6 text-[#bf9310] ml-3" />
+                            <HelpCircle className="w-6 h-6 text-royal-gold ml-3" />
                         </div>
-                        <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 ml-6"></div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 ml-6"></div>
                     </div>
 
-                    <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-5xl font-medium leading-snug text-center max-w-6xl mx-auto text-foreground">
-                        Find answers to common questions about
-                        <br />
-                        <span className="block">our resort and services</span>
+                    <h1 className="text-3xl md:text-5xl font-serif font-medium leading-tight text-center max-w-4xl mx-auto">
+                        Find answers to common questions about <br />
+                        <span className="royal-gradient-text">Our Resort and Services</span>
                     </h1>
                 </motion.div>
 
@@ -58,7 +57,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <CalendarClock className="w-5 h-5 text-[#bf9310]" />
+                                <CalendarClock className="w-5 h-5 text-royal-gold" />
                                 What are the check-in and check-out times?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -73,7 +72,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <Plane className="w-5 h-5 text-[#bf9310]" />
+                                <Plane className="w-5 h-5 text-royal-gold" />
                                 Do you offer airport transportation?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -87,7 +86,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <Dumbbell className="w-5 h-5 text-[#bf9310]" />
+                                <Dumbbell className="w-5 h-5 text-royal-gold" />
                                 Is there a fitness center or spa available?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -100,7 +99,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <Wifi className="w-5 h-5 text-[#bf9310]" />
+                                <Wifi className="w-5 h-5 text-royal-gold" />
                                 Is Wi-Fi available throughout the resort?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -116,7 +115,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <PawPrint className="w-5 h-5 text-[#bf9310]" />
+                                <PawPrint className="w-5 h-5 text-royal-gold" />
                                 Are pets allowed at the resort?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -131,7 +130,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <Utensils className="w-5 h-5 text-[#bf9310]" />
+                                <Utensils className="w-5 h-5 text-royal-gold" />
                                 What dining options are available?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -146,7 +145,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <Clock8 className="w-5 h-5 text-[#bf9310]" />
+                                <Clock8 className="w-5 h-5 text-royal-gold" />
                                 Can I cancel my booking? What is the policy?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">
@@ -162,7 +161,7 @@ export function FAQSection() {
                             className="border-b border-gray-700"
                         >
                             <AccordionTrigger className="text-lg font-medium text-foreground hover:text-title flex items-center gap-2">
-                                <CircleDollarSign className="w-5 h-5 text-[#bf9310]" />
+                                <CircleDollarSign className="w-5 h-5 text-royal-gold" />
                                 What currencies and payment methods are accepted?
                             </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground">

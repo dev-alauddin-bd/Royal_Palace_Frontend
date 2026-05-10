@@ -103,109 +103,101 @@ const TestimonialsSection = () => {
           >
             {/* Title Decoration */}
             <div className="flex items-center justify-center mb-8">
-              <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 mr-6"></div>
+              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 mr-6"></div>
               <div className="flex items-center">
-                <MessageCircle className="w-6 h-6 text-[#bf9310] mr-3" />
-                <h2 className="text-[#bf9310] text-sm font-medium tracking-[0.2em] uppercase">
+                <MessageCircle className="w-6 h-6 text-royal-gold mr-3" />
+                <h2 className="text-royal-gold text-sm font-medium tracking-[0.2em] uppercase">
                   Testimonials
                 </h2>
-                <MessageCircle className="w-6 h-6 text-[#bf9310] ml-3" />
+                <MessageCircle className="w-6 h-6 text-royal-gold ml-3" />
               </div>
-              <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 ml-6"></div>
+              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 ml-6"></div>
             </div>
 
             {/* Main Heading */}
-            <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-5xl font-medium leading-snug text-center max-w-6xl mx-auto text-white">
-              Hear from our valued
-              <br />
-              <span className="block">guests and their experiences</span>
-            </h1>
-          </motion.div>
-          {/* Testimonials Cards with slide animation */}
-          <AnimatePresence custom={direction} mode="wait">
-            <motion.div
-              key={page}
-              custom={direction}
-              variants={pageVariants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
-              transition={{ duration: 0.5 }}
-              className="grid md:grid-cols-2 gap-8 mb-12"
-            >
-              {testimonials.map((testimonial: ITestimonial) => (
-                <div
-                  key={testimonial._id}
-                  className="bg-black/40 backdrop-blur-sm border rounded-lg p-8"
-                >
-                  {/* User Info & Avatar */}
-                  <div className="flex items-center mb-6">
-                    <div className="relative">
-                      <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white">
-                        <Image
-                          src={testimonial.userImage || '/placeholder.svg'}
-                          alt={testimonial.userName}
-                          width={64}
-                          height={64}
-                          className="object-cover"
-                        />
-                      </div>
-                      <div className="absolute -top-2 -right-2 bg-white rounded-full px-2 py-1 flex items-center space-x-1">
-                        <Star className="w-3 h-3 fill-[#bf9310] text-[#bf9310]" />
-                        <span className="text-xs font-medium text-black">
-                          {testimonial.rating}
-                        </span>
-                      </div>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-4xl mx-auto text-white">
+            Hear from our <br />
+            <span className="text-royal-gold italic">Valued Guests</span>
+          </h1>
+        </motion.div>
+        {/* Testimonials Cards with slide animation */}
+        <AnimatePresence custom={direction} mode="wait">
+          <motion.div
+            key={page}
+            custom={direction}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.5 }}
+            className="grid md:grid-cols-2 gap-12 mb-16"
+          >
+            {testimonials.map((testimonial: ITestimonial) => (
+              <div
+                key={testimonial._id}
+                className="glass-panel border-white/10 rounded-none p-12 relative overflow-hidden"
+              >
+                {/* User Info & Avatar */}
+                <div className="flex items-center mb-8">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-none overflow-hidden border border-royal-gold/30">
+                      <Image
+                        src={testimonial.userImage || '/placeholder.svg'}
+                        alt={testimonial.userName}
+                        width={80}
+                        height={80}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="absolute -top-3 -right-3 bg-royal-gold text-royal-blue px-3 py-1 flex items-center space-x-1 font-bold text-xs">
+                      <Star className="w-3 h-3 fill-royal-blue" />
+                      <span>{testimonial.rating}</span>
                     </div>
                   </div>
-
-                  {/* Testimonial Text */}
-                  <Quote className="w-12 h-12 text-[#bf9310] mb-6" />
-                  <p className="text-white text-lg leading-relaxed mb-6">
-                    {testimonial.reviewText}
-                  </p>
-
-                  {/* Author Name */}
-                  <div>
-                    <h4 className="text-white font-medium text-lg">
-                      {testimonial.userName}
-                    </h4>
-                  </div>
                 </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
 
-          {/* Pagination Buttons */}
-          <div className="flex items-center justify-center space-x-4">
-            <button
-              onClick={handlePrev}
-              disabled={page === 1}
-              className={`w-12 h-12 rounded-full border border-gray-600 text-white flex items-center justify-center transition-colors ${
-                page === 1
-                  ? 'opacity-30 cursor-not-allowed'
-                  : 'hover:bg-white hover:text-black'
-              }`}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
+                {/* Testimonial Text */}
+                <Quote className="w-10 h-10 text-royal-gold mb-8 opacity-50" />
+                <p className="text-white text-xl font-serif italic leading-relaxed mb-8">
+                  "{testimonial.reviewText}"
+                </p>
 
-            <div className="flex-1 h-px bg-gray-600 max-w-md">
-              <div className="h-full bg-yellow-500 w-2/3" />
-            </div>
+                {/* Author Name */}
+                <div className="border-t border-white/10 pt-6">
+                  <h4 className="text-royal-gold font-bold text-[10px] uppercase tracking-[0.3em]">
+                    {testimonial.userName}
+                  </h4>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
 
-            <button
-              onClick={handleNext}
-              disabled={testimonials.length < limit}
-              className={`w-12 h-12 rounded-full bg-[#bf9310] text-black flex items-center justify-center transition-colors ${
-                testimonials.length < limit
-                  ? 'opacity-30 cursor-not-allowed'
-                  : 'hover:bg-yellow-600'
-              }`}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+        {/* Pagination Buttons */}
+        <div className="flex items-center justify-center space-x-6">
+          <button
+            onClick={handlePrev}
+            disabled={page === 1}
+            className="w-14 h-14 border border-royal-gold/30 text-royal-gold flex items-center justify-center transition-all hover:bg-royal-gold hover:text-royal-blue disabled:opacity-20"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <div className="flex-1 h-px bg-white/10 max-w-sm relative">
+            <div 
+              className="absolute h-full bg-royal-gold transition-all duration-500" 
+              style={{ width: `${(page / (testimonialsData?.meta?.totalPages || 1)) * 100}%` }}
+            />
           </div>
+
+          <button
+            onClick={handleNext}
+            disabled={testimonials.length < limit}
+            className="w-14 h-14 bg-royal-gold text-royal-blue flex items-center justify-center transition-all hover:bg-royal-gold-dark hover:text-white disabled:opacity-20"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
 
           {/* Mobile “View All” Button */}
           <div className="flex justify-center mt-8 md:hidden">

@@ -1,159 +1,69 @@
+'use client';
+
 import { Crown } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <div className="relative mt-16 bg-main">
-      <div className="px-4 pt-12 container mx-auto">
-        <div className="grid gap-16 row-gap-10 mb-8 lg:grid-cols-6">
-          <div className="md:max-w-md lg:col-span-2">
-            <Link
-              href="/"
-              aria-label="Go home"
-              title="Royal Palace"
-              className="inline-flex items-center"
-            >
-              <div className="flex items-center space-x-2 mb-6">
-                <Crown className="h-5 w-5 text-[#bf9310]" />
-                <span className="text-lg font-bold text-[#bf9310]">
-                  ROYAL PALACE
-                </span>
-              </div>
+    <footer className="bg-background border-t border-royal-gold/10">
+      <div className="container mx-auto px-4 py-16 md:py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="space-y-6">
+            <Link href="/" className="flex items-center space-x-3">
+              <Crown className="h-7 w-7 text-royal-gold" />
+              <span className="font-serif text-2xl font-bold tracking-[0.1em] uppercase">Royal Palace</span>
             </Link>
-            <div className="mt-4 lg:max-w-sm">
-              <p className="text-sm text-deep-purple-50">
-                Nestled in the heart of the city, our Royal Palace Hotel offers
-                timeless elegance and unmatched hospitality.
-              </p>
-              <p className="mt-4 text-sm text-deep-purple-50">
-                Enjoy luxury amenities, exquisite dining, and world-class
-                service designed to make your stay unforgettable.
-              </p>
-            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Experience the pinnacle of luxury and hospitality. Our hotel offers world-class amenities and exceptional service for an unforgettable stay in the heart of sovereignty.
+            </p>
+          </div>
+          
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-royal-gold mb-8">Quick Links</h3>
+            <ul className="space-y-4 text-xs font-medium uppercase tracking-widest">
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">About Us</Link></li>
+              <li><Link href="/rooms" className="text-muted-foreground hover:text-royal-gold transition-colors">Rooms & Suites</Link></li>
+              <li><Link href="/faq" className="text-muted-foreground hover:text-royal-gold transition-colors">FAQ</Link></li>
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">Contact</Link></li>
+            </ul>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 row-gap-8 lg:col-span-4 md:grid-cols-4">
-            <div>
-              <p className="font-semibold tracking-wide text-[#bf9310]">
-                Quick Links
-              </p>
-              <ul className="mt-2 space-y-2">
-                {[
-                  'About Us',
-                  'Rooms & Suites',
-                  'Gallery',
-                  'Special Offers',
-                ].map((link) => (
-                  <li key={link}>
-                    <Link
-                      href="/"
-                      className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                    >
-                      {link}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-royal-gold mb-8">Services</h3>
+            <ul className="space-y-4 text-xs font-medium uppercase tracking-widest">
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">Fine Dining</Link></li>
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">Spa & Wellness</Link></li>
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">Event Planning</Link></li>
+              <li><Link href="/" className="text-muted-foreground hover:text-royal-gold transition-colors">Concierge</Link></li>
+            </ul>
+          </div>
 
-            <div>
-              <p className="font-semibold tracking-wide text-[#bf9310]">
-                Guest Services
-              </p>
-              <ul className="mt-2 space-y-2">
-                {[
-                  'Spa & Wellness',
-                  'Fine Dining',
-                  'Event Planning',
-                  'Concierge',
-                ].map((service) => (
-                  <li key={service}>
-                    <Link
-                      href="/"
-                      className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                    >
-                      {service}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="font-semibold tracking-wide text-[#bf9310]">
-                Experiences
-              </p>
-              <ul className="mt-2 space-y-2">
-                {[
-                  'Water Sports',
-                  'Island Tours',
-                  'Cultural Events',
-                  'Private Dinners',
-                ].map((item) => (
-                  <li key={item}>
-                    <Link
-                      href="/"
-                      className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                    >
-                      {item}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="font-semibold tracking-wide text-[#bf9310]">
-                Contact
-              </p>
-              <ul className="mt-2 space-y-2">
-                <li>
-                  <Link
-                    href="/"
-                    className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                  >
-                    +1 (555) 123-4567
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/"
-                    className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                  >
-                    info@royalpalace.com
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/"
-                    className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                  >
-                    123 Luxury Lane, Maldives
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/"
-                    className="transition-colors duration-300 text-deep-purple-50 hover:text-[#bf9310]"
-                  >
-                    Open 24/7
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          <div>
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.3em] text-royal-gold mb-8">Contact Info</h3>
+            <ul className="space-y-4 text-xs text-muted-foreground font-medium uppercase tracking-widest">
+              <li className="flex items-start gap-3">
+                <span className="text-royal-gold">Address:</span>
+                123 Luxury Lane, Maldives
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-royal-gold">Phone:</span>
+                +1 (555) 000-0000
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="text-royal-gold">Email:</span>
+                concierge@royalpalace.com
+              </li>
+              <li className="text-royal-gold font-bold pt-2">Open 24/7</li>
+            </ul>
           </div>
         </div>
-
-        <div className="flex flex-col justify-between pt-5 pb-10 border-t border-deep-purple-accent-200 sm:flex-row">
-          <p className="text-sm text-gray-100">
-            &copy; 2025 Royal Palace Hotel. All rights reserved.
+        
+        <div className="mt-20 pt-10 border-t border-royal-gold/10 text-center">
+          <p className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground">
+            &copy; {new Date().getFullYear()} Royal Palace Hotel. All rights reserved.
           </p>
-          <div className="flex items-center mt-4 space-x-4 sm:mt-0">
-            {/* Social Icons (you can replace with lucide-react if needed) */}
-            {/* Just keeping the structure — already done earlier */}
-          </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

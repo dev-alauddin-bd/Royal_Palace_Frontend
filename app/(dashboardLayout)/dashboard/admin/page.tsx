@@ -59,7 +59,23 @@ function AdminDashboard() {
     )
   }
 
-  const { stats, bookingStatusBreakdown, topCustomers, recentBookings } = dashboardData
+  const { 
+    stats = {
+      totalBookings: 0,
+      monthlyBookings: 0,
+      yearlyBookings: 0,
+      todaysRevenue: 0,
+      monthlyRevenue: 0,
+      totalRevenue: 0,
+      avgBookingValue: 0,
+      occupancyRate: "0%",
+      repeatCustomers: 0,
+      newCustomers: 0
+    }, 
+    bookingStatusBreakdown = [], 
+    topCustomers = [], 
+    recentBookings = [] 
+  } = dashboardData?.data || {}
 
   // Prepare chart data
   const statusColors = {

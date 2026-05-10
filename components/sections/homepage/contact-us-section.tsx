@@ -71,64 +71,62 @@ export function ContactUs() {
           className="mb-20"
         >
           <div className="flex items-center justify-center mb-8">
-            <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 mr-6"></div>
-            <div className="flex items-center">
-              <MessageSquare className="w-6 h-6 text-[#bf9310] mr-3" />
-              <h2 className="text-base md:text-sm font-medium tracking-[0.2em] uppercase">
-                Contact Us
-              </h2>
-              <MessageSquare className="w-6 h-6 text-[#bf9310] ml-3" />
-            </div>
-            <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 ml-6"></div>
+          <div className="h-px bg-royal-gold/20 w-32 mr-6"></div>
+          <div className="flex items-center">
+            <MessageSquare className="w-5 h-5 text-royal-gold mr-4" />
+            <h2 className="royal-label">
+              Contact Us
+            </h2>
+            <MessageSquare className="w-5 h-5 text-royal-gold ml-4" />
           </div>
+          <div className="h-px bg-royal-gold/20 w-32 ml-6"></div>
+        </div>
 
-          <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-5xl font-medium leading-snug text-center max-w-6xl mx-auto text-foreground">
-            We'd love to hear from you!
-            <br />
-            <span className="block">
-              Reach out with any questions or requests
-            </span>
-          </h1>
-        </motion.div>
+        <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-4xl mx-auto">
+          Inquire for Your <br />
+          <span className="text-royal-gold italic">Royal Experience</span>
+        </h1>
+      </motion.div>
 
-        <div className="flex flex-col lg:flex-row">
-          {/* Left - Image */}
-          <div className="relative flex-1 min-h-[400px] lg:min-h-[600px] bg-gray-200">
-            <Image
-              src="/images/contact.jpg"
-              alt="Contact"
-              unoptimized
-              fill
-              className="absolute inset-0 object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-black/40 z-10" />
-            <Card className="absolute bottom-8 left-8 right-8 lg:bottom-16 lg:left-16 lg:right-auto lg:w-[400px] bg-main/70 backdrop-blur-sm border rounded-none p-0 hidden lg:block z-20">
-              <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-white">
-                <div>
-                  <h3 className="font-semibold">Email</h3>
-                  <p>info@example.com</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Phone</h3>
-                  <p>+99 021 324 258</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold">Address</h3>
-                  <p>340 Main St, USA</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+      <div className="flex flex-col lg:flex-row border border-royal-gold/10">
+        {/* Left - Image */}
+        <div className="relative flex-1 min-h-[400px] lg:min-h-[600px]">
+          <Image
+            src="/images/contact.jpg"
+            alt="Contact"
+            unoptimized
+            fill
+            className="absolute inset-0 object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40 z-10" />
+          <Card className="absolute bottom-8 left-8 right-8 lg:bottom-16 lg:left-16 lg:right-auto lg:w-[400px] glass-panel border-white/10 rounded-none p-0 hidden lg:block z-20">
+            <CardContent className="p-10 grid grid-cols-1 gap-8 text-white">
+              <div>
+                <h3 className="royal-label mb-2">Email</h3>
+                <p className="text-sm font-medium tracking-widest">concierge@royalpalace.com</p>
+              </div>
+              <div>
+                <h3 className="royal-label mb-2">Phone</h3>
+                <p className="text-sm font-medium tracking-widest">+1 (555) ROYAL-PL</p>
+              </div>
+              <div>
+                <h3 className="royal-label mb-2">Address</h3>
+                <p className="text-sm font-medium tracking-widest leading-relaxed">123 Luxury Lane, Maldives Archipelago</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
           {/* Right - Form */}
           <div className="flex-1 flex items-center justify-center p-8 lg:p-16 bg-main">
             <div className="w-full max-w-md space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tight text-foreground">
-                  Let's talk about your problem.
-                </h2>
-              </div>
+            <div className="space-y-4">
+              <h2 className="text-4xl font-serif font-bold tracking-tight text-white">
+                Inquire for <br />
+                <span className="text-royal-gold italic">Your Stay</span>
+              </h2>
+            </div>
               <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-foreground">
@@ -197,9 +195,9 @@ export function ContactUs() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#bf9310] hover:bg-yellow-600 text-black font-semibold py-3 rounded-md transition"
+                  className="w-full royal-button"
                 >
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? "Sending..." : "Send Royal Inquiry"}
                 </Button>
               </form>
             </div>

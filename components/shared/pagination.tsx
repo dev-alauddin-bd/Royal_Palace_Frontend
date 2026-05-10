@@ -14,14 +14,14 @@ interface IPaginationProps {
 
 const Pagination = ({ page, totalPages, setPage }: IPaginationProps) => {
   return (
-    <div className="flex justify-center flex-wrap gap-2 mt-10">
+    <div className="flex justify-center flex-wrap gap-4 mt-16">
       {/* ===== Previous Page Button ===== */}
       <Button
         onClick={() => setPage(Math.max(1, page - 1))}
         disabled={page === 1}
-        className="bg-[#bf9310] text-white hover:bg-[#a87e0d]"
+        className="bg-royal-gold text-royal-blue hover:bg-royal-gold-dark hover:text-white rounded-none w-12 h-12"
       >
-        <ChevronLeft className="w-4 h-4" />
+        <ChevronLeft className="w-5 h-5" />
       </Button>
 
       {/* ===== Page Number Buttons ===== */}
@@ -33,11 +33,11 @@ const Pagination = ({ page, totalPages, setPage }: IPaginationProps) => {
           <Button
             key={pageNumber}
             onClick={() => setPage(pageNumber)}
-            className={
+            className={`w-12 h-12 text-xs font-bold tracking-widest rounded-none transition-all duration-300 ${
               isActive
-                ? 'bg-[#bf9310] text-white hover:bg-[#a87e0d]'
-                : 'border border-[#bf9310] text-[#bf9310] bg-white hover:bg-[#fce9b9]'
-            }
+                ? 'bg-royal-gold text-royal-blue shadow-lg'
+                : 'border border-royal-gold/20 text-royal-gold bg-transparent hover:border-royal-gold'
+            }`}
           >
             {pageNumber}
           </Button>
@@ -48,9 +48,9 @@ const Pagination = ({ page, totalPages, setPage }: IPaginationProps) => {
       <Button
         onClick={() => setPage(Math.min(totalPages, page + 1))}
         disabled={page === totalPages}
-        className="bg-[#bf9310] text-white hover:bg-[#a87e0d]"
+        className="bg-royal-gold text-royal-blue hover:bg-royal-gold-dark hover:text-white rounded-none w-12 h-12"
       >
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-5 h-5" />
       </Button>
     </div>
   );

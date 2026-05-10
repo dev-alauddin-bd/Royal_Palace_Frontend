@@ -25,15 +25,15 @@ export default function RoomImageGallery({ room }: RoomImageGalleryProps) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <div className="mb-8">
+    <div className="mb-12">
       {/* ========== 📷 Main Image Display ========== */}
-      <div className="relative">
+      <div className="relative group overflow-hidden border border-royal-gold/10">
         <Image
           src={mainImage}
           alt={`${room?.name || 'Room'} - Main Image`}
-          width={800}
-          height={400}
-          className="w-full h-[70vh] object-cover rounded-lg"
+          width={1200}
+          height={600}
+          className="w-full h-[75vh] object-cover rounded-none transition-transform duration-1000 group-hover:scale-105"
           priority
           unoptimized
           onLoad={() => setLoading(false)}
@@ -41,39 +41,45 @@ export default function RoomImageGallery({ room }: RoomImageGalleryProps) {
 
         {/* ========== 🔄 Loading Spinner ========== */}
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-lg z-10">
-            <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center bg-royal-obsidian/40 z-10">
+            <div className="w-12 h-12 border-2 border-royal-gold border-t-transparent animate-spin" />
           </div>
         )}
 
         {/* ========== 💰 Price Tag ========== */}
-        <div className="absolute top-4 right-4 bg-[#bf9310] text-white px-4 py-2 rounded-lg font-bold text-lg shadow-lg">
-          ${room?.price || 0}/night
+        <div className="absolute top-8 right-8 bg-royal-gold text-royal-blue px-8 py-3 font-serif font-bold text-sm tracking-[0.2em] uppercase shadow-2xl">
+          ${room?.price || 0} / NIGHT
         </div>
+
+        {/* Decorative corner */}
+        <div className="absolute bottom-8 left-8 w-12 h-12 border-b-2 border-l-2 border-royal-gold/50" />
       </div>
 
       {/* ========== 🖼️ Thumbnails Gallery ========== */}
       {room?.images && room.images.length > 1 && (
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 mt-4">
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-4 mt-6">
           {room.images.map((img, index) => (
-            <Image
+            <div 
               key={index}
-              src={img || '/placeholder.svg'}
-              alt={`${room?.name || 'Room'} - Thumbnail ${index + 1}`}
-              width={150}
-              height={100}
               onClick={() => {
                 setLoading(true);
                 setMainImage(img);
               }}
-              className={`w-full h-20 object-cover rounded cursor-pointer transition-all border-2
+              className={`relative h-20 cursor-pointer overflow-hidden border transition-all duration-300
                 ${
                   mainImage === img
-                    ? 'border-[#bf9310]'
-                    : 'border-transparent hover:border-[#bf9310]'
+                    ? 'border-royal-gold ring-1 ring-royal-gold'
+                    : 'border-white/10 hover:border-royal-gold/50'
                 }`}
-              unoptimized
-            />
+            >
+              <Image
+                src={img || '/placeholder.svg'}
+                alt={`${room?.name || 'Room'} - Thumbnail ${index + 1}`}
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
           ))}
         </div>
       )}

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
 
-  cacheComponents:true,
+  cacheComponents: true,
 
 
   async rewrites() {

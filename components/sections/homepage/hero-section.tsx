@@ -15,18 +15,13 @@ const HeroSection = () => {
   const router = useRouter();
 
   const handleSearch = () => {
-    if (!checkIn || !checkOut) {
-      alert('Please select check-in and check-out dates.');
-      return;
-    }
-    if (new Date(checkOut) <= new Date(checkIn)) {
-      alert('Check-out date must be after check-in date.');
-      return;
-    }
+    const params = new URLSearchParams();
+    if (checkIn) params.append('checkInDate', checkIn);
+    if (checkOut) params.append('checkOutDate', checkOut);
+    params.append('adults', String(adults));
+    params.append('children', String(children));
 
-    router.push(
-      `/check-rooms?checkInDate=${checkIn}&checkOutDate=${checkOut}&adults=${adults}&children=${children}`,
-    );
+    router.push(`/rooms?${params.toString()}`);
   };
 
   return (
@@ -43,25 +38,24 @@ const HeroSection = () => {
 
       {/* 📦 Content Center */}
       <div className="relative z-20 flex flex-col justify-center items-center h-full px-4 text-center">
-    <motion.h1
-  initial={{ opacity: 0, y: -40 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
-  className="text-white font-serif font-bold text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight mb-6"
->
-  Discover the Perfect Room
-  <br />
-  <span className="text-[#bf9310]">for Your Luxury Escape</span>
-</motion.h1>
+        <motion.h1
+          initial={{ opacity: 0, y: -40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-white font-serif font-bold text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] mb-8"
+        >
+          Discover the <br />
+          <span className="text-royal-gold italic">Perfect Room</span>
+        </motion.h1>
 
-<motion.p
-  initial={{ opacity: 0, y: 30 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.3 }}
-  className="text-white text-base sm:text-lg md:text-xl max-w-2xl mb-10"
->
-  From romantic getaways to family retreats — experience the comfort, elegance, and hospitality of our premium resort rooms.
-</motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="text-white/70 text-sm sm:text-base md:text-lg max-w-2xl mb-16 font-medium tracking-[0.4em] uppercase"
+        >
+          Elegance, Comfort, and Sovereignty
+        </motion.p>
 
         {/* 📅 Booking Form */}
         <motion.form
@@ -71,12 +65,16 @@ const HeroSection = () => {
           }}
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="backdrop-blur-sm border border-white/20 bg-white/10 p-6 rounded-xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl text-foreground"
+          transition={{ duration: 1, delay: 0.6 }}
+          className="glass-panel p-10 rounded-none border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-7xl text-white relative"
         >
+          {/* Decorative Corner */}
+          <div className="absolute -top-1 -left-1 w-8 h-8 border-t-2 border-l-2 border-royal-gold"></div>
+          <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-2 border-r-2 border-royal-gold"></div>
+
           {/* Check-in */}
-          <div className="flex flex-col">
-            <label htmlFor="checkIn" className="mb-1 font-semibold text-sm">
+          <div className="flex flex-col items-start">
+            <label htmlFor="checkIn" className="royal-label mb-3">
               Check-in
             </label>
             <input
@@ -84,14 +82,14 @@ const HeroSection = () => {
               id="checkIn"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
-              className="rounded-md bg-main border border-white/20 p-2 text-foreground placeholder:text-foreground/40"
+              className="w-full bg-white/5 border border-white/10 p-4 text-xs text-white placeholder:text-white/40 focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
               required
             />
           </div>
 
           {/* Check-out */}
-          <div className="flex flex-col">
-            <label htmlFor="checkOut" className="mb-1 font-semibold text-sm">
+          <div className="flex flex-col items-start">
+            <label htmlFor="checkOut" className="royal-label mb-3">
               Check-out
             </label>
             <input
@@ -99,56 +97,66 @@ const HeroSection = () => {
               id="checkOut"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
-              className="rounded-md bg-main border border-white/20 p-2 text-foreground"
+              className="w-full bg-white/5 border border-white/10 p-4 text-xs text-white focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
               required
             />
           </div>
 
           {/* Adults */}
-          <div className="flex flex-col">
-            <label htmlFor="adults" className="mb-1 font-semibold text-sm">
-              Adults
-            </label>
-            <select
-              id="adults"
-              value={adults}
-              onChange={(e) => setAdults(parseInt(e.target.value))}
-              className="rounded-md bg-main border border-white/20 p-2 text-foreground"
-            >
-              {[...Array(4).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col items-start">
+            <label className="royal-label mb-3">Adults</label>
+            <div className="flex items-center w-full bg-white/5 border border-white/10 h-12">
+              <button
+                type="button"
+                onClick={() => setAdults(Math.max(1, adults - 1))}
+                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
+              >
+                -
+              </button>
+              <div className="flex-1 text-center text-[10px] font-bold tracking-widest">
+                {adults} {adults === 1 ? 'ADULT' : 'ADULTS'}
+              </div>
+              <button
+                type="button"
+                onClick={() => setAdults(Math.min(10, adults + 1))}
+                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
+              >
+                +
+              </button>
+            </div>
           </div>
 
           {/* Children */}
-          <div className="flex flex-col">
-            <label htmlFor="children" className="mb-1 font-semibold text-sm">
-              Children
-            </label>
-            <select
-              id="children"
-              value={children}
-              onChange={(e) => setChildren(parseInt(e.target.value))}
-              className="rounded-md bg-main border border-white/20 p-2 text-foreground"
-            >
-              {[...Array(4).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-col items-start">
+            <label className="royal-label mb-3">Children</label>
+            <div className="flex items-center w-full bg-white/5 border border-white/10 h-12">
+              <button
+                type="button"
+                onClick={() => setChildren(Math.max(0, children - 1))}
+                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
+              >
+                -
+              </button>
+              <div className="flex-1 text-center text-[10px] font-bold tracking-widest">
+                {children} {children === 1 ? 'CHILD' : 'CHILDREN'}
+              </div>
+              <button
+                type="button"
+                onClick={() => setChildren(Math.min(10, children + 1))}
+                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
+              >
+                +
+              </button>
+            </div>
           </div>
 
           {/* Button */}
           <button
             type="submit"
-            className="sm:col-span-2 md:col-span-4 bg-[#bf9310] cursor-pointer hover:bg-yellow-600 text-black font-semibold py-3 rounded-md transition flex justify-center items-center"
+            className="sm:col-span-2 md:col-span-4 royal-button flex justify-center items-center mt-6"
           >
-            <CalendarDays className="w-5 h-5 mr-2" />
-            Available Rooms
+            <CalendarDays className="w-5 h-5 mr-3" />
+            CHECK AVAILABILITY
           </button>
         </motion.form>
       </div>

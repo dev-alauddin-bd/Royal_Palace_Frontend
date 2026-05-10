@@ -23,8 +23,8 @@ export function useLogout() {
       // Clear auth state in Redux store
       dispatch(logout());
 
-      // Redirect to login page
-      router.push('/login');
+      // Redirect to home page
+      router.push('/');
     } catch (error) {
       // Log any errors encountered during logout
       console.error('Logout failed', error);

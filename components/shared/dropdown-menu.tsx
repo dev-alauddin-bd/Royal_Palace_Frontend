@@ -43,10 +43,12 @@ export function DropdownMenuInNav({ onClick }: { onClick?: () => void }) {
     <DropdownMenu>
       {user && (
         <DropdownMenuTrigger asChild>
-          <div className="flex items-center gap-2 cursor-pointer border border-[#bf9310] rounded-full">
-            <Avatar>
+          <div className="flex items-center gap-2 cursor-pointer border border-royal-gold/40 rounded-full hover:border-royal-gold transition-colors duration-300 p-0.5">
+            <Avatar className="w-8 h-8 md:w-10 md:h-10">
               <AvatarImage src={user?.image} alt="userImage" />
-              <AvatarFallback>AV</AvatarFallback>
+              <AvatarFallback className="bg-royal-gold text-royal-obsidian font-bold">
+                {user?.name?.charAt(0) || 'U'}
+              </AvatarFallback>
             </Avatar>
           </div>
         </DropdownMenuTrigger>

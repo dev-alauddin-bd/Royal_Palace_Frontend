@@ -1,5 +1,5 @@
 // ====================================================
-// 📅 CustomCalendar Component – Visual Calendar for Booking with Disabled Dates, Selection & Range
+// 📅 LargeScreenCalendar Component – Premium Visual Calendar
 // ====================================================
 
 'use client';
@@ -69,46 +69,46 @@ export default function LargeScreenCalendar({
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
 
   return (
-    <div>
+    <div className="w-full">
       {/* ========== 📅 Header: Month Navigation ========== */}
-      <div className="flex justify-between items-center mb-3 text-foreground pb-2">
+      <div className="flex justify-between items-center mb-10 text-foreground">
         <button
           aria-label="Previous month"
           onClick={prevMonth}
-          className="p-1 hover:text-[#bf9310] border border-transparent rounded hover:border-[#bf9310]"
+          className="p-2 text-royal-gold border border-royal-gold/20 hover:border-royal-gold transition-all"
           type="button"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <div className="text-lg font-semibold">
-          {format(currentMonth, 'MMMM yyyy')}
+        <div className="text-2xl font-serif font-bold text-foreground capitalize tracking-wide">
+          {format(currentMonth, 'MMMM')} <span className="text-royal-gold italic">{format(currentMonth, 'yyyy')}</span>
         </div>
         <button
           aria-label="Next month"
           onClick={nextMonth}
-          className="p-1 hover:text-[#bf9310] border border-transparent rounded hover:border-[#bf9310]"
+          className="p-2 text-royal-gold border border-royal-gold/20 hover:border-royal-gold transition-all"
           type="button"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* ========== 🗓️ Weekday Headers ========== */}
-      <div className="grid grid-cols-7 gap-1 text-xs text-foreground select-none border-b border-slate-700 pb-1">
+      <div className="grid grid-cols-7 gap-2 text-center mb-4">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-          <div key={day} className="text-center font-medium">
+          <div key={day} className="royal-label !text-[9px] py-2 border-b border-royal-gold/10 opacity-60">
             {day}
           </div>
         ))}
       </div>
 
       {/* ========== 📆 Calendar Days ========== */}
-      <div className="grid grid-cols-7 gap-1 mt-1 ml-6">
+      <div className="grid grid-cols-7 gap-2">
         {/* Empty start cells */}
         {Array(monthStart.getDay())
           .fill(null)
           .map((_, i) => (
-            <div key={`empty-${i}`} />
+            <div key={`empty-${i}`} className="h-12" />
           ))}
 
         {days.map((date) => {
@@ -126,34 +126,41 @@ export default function LargeScreenCalendar({
               onClick={() => !isDisabled && onSelectDate(date)}
               disabled={isDisabled}
               aria-label={format(date, 'PPP')}
-              className={`w-10 h-10 flex items-center justify-center text-sm border 
+              className={`h-12 flex items-center justify-center text-xs font-bold transition-all relative border
                 ${
                   isDisabled
-                    ? 'bg-red-600 text-foreground cursor-not-allowed border-red-700'
+                    ? 'bg-red-500/10 text-red-500/30 cursor-not-allowed border-transparent'
                     : isSelected
-                      ? 'bg-[#bf9310] text-black font-bold border-yellow-400'
+                      ? 'bg-royal-gold text-royal-blue border-royal-gold shadow-[0_0_15px_rgba(197,160,33,0.3)]'
                       : inRange
-                        ? 'bg-yellow-600 text-black border-yellow-300'
-                        : 'hover:bg-yellow-400 hover:text-black text-foreground border-slate-700'
+                        ? 'bg-royal-gold/20 text-royal-gold border-royal-gold/30'
+                        : 'hover:bg-royal-gold hover:text-royal-blue text-foreground/80 border-white/5'
                 }
-                ${isToday ? 'border-2 border-slate-400' : ''}
+                ${isToday && !isSelected ? 'border-royal-gold/50' : ''}
               `}
             >
               {date.getDate()}
+              {isToday && !isSelected && (
+                <div className="absolute top-1 right-1 w-1 h-1 bg-royal-gold rounded-full" />
+              )}
             </button>
           );
         })}
       </div>
 
       {/* ========== 🧾 Legend ========== */}
-      <div className="mt-4 flex gap-4 text-sm text-foreground">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-[#bf9310] rounded" />
-          Selected
+      <div className="mt-8 flex flex-wrap gap-6 pt-6 border-t border-royal-gold/10">
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-royal-gold" />
+          <span className="text-[10px] uppercase tracking-widest font-bold text-foreground/60">Selected Date</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-red-600 rounded" />
-          Booked
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-royal-gold/20 border border-royal-gold/30" />
+          <span className="text-[10px] uppercase tracking-widest font-bold text-foreground/60">Stay Range</span>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="w-3 h-3 bg-red-500/20" />
+          <span className="text-[10px] uppercase tracking-widest font-bold text-foreground/60">Unavailable</span>
         </div>
       </div>
     </div>

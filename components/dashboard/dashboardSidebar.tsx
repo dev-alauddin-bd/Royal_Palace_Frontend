@@ -100,12 +100,15 @@ export function AppSidebar() {
   const menuItems = [...roleBasedItems, ...sharedItems];
 
   return (
-    <Sidebar className="border-r bg-main">
-      <SidebarHeader className="border-b p-4">
-        <Link href="/" className="flex items-center space-x-2">
-          <Crown className="h-8 w-8 text-[#bf9310]" />
-          <span className="text-2xl font-bold text-yellow-500">
-            ROYAL PALACE
+    <Sidebar className="border-r border-royal-gold/10 bg-royal-obsidian">
+      <SidebarHeader className="border-b border-royal-gold/10 p-6 bg-white/5">
+        <Link href="/" className="flex items-center space-x-3 group">
+          <div className="relative">
+             <Crown className="h-8 w-8 text-royal-gold group-hover:rotate-12 transition-transform duration-500" />
+             <div className="absolute -inset-1 bg-royal-gold/20 blur opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <span className="text-xl font-serif font-bold tracking-widest text-foreground group-hover:text-royal-gold transition-colors">
+            ROYAL <span className="text-royal-gold">PALACE</span>
           </span>
         </Link>
       </SidebarHeader>

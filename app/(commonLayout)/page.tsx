@@ -5,7 +5,7 @@ import RoomAndSuites from '@/components/sections/homepage/room-and-suites';
 import TestimonialsSection from '@/components/sections/homepage/testimonials-section';
 
 import TeamSection from '@/components/sections/homepage/team-section';
-import AmenitiesSection from '@/components/sections/homepage/amineties-section';
+
 import { ContactUs } from '@/components/sections/homepage/contact-us-section';
 import { FAQSection } from '@/components/sections/homepage/faq-section';
 
@@ -21,8 +21,7 @@ export default function Home() {
       {/* ===== Rooms & Suites Section ===== */}
       <RoomAndSuites />
 
-      {/* ===== Amenities Section ===== */}
-      <AmenitiesSection />
+
 
       {/* ===== Team Member Section ===== */}
       <TeamSection />

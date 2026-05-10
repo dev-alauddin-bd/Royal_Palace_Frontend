@@ -88,7 +88,7 @@ const baseApi = createApi({
     'Room',
     'Booking',
     'User',
-    'Service',
+    'Team',
     'Testimonial',
     'Dashboard',
     'Payment',

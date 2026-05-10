@@ -5,7 +5,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { format, differenceInCalendarDays } from 'date-fns';
+import { format, differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 import { CalendarDays, Clock, Moon, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -62,6 +62,18 @@ export default function DateRangeCalendarSection({
       if (date < selectedRange.from) {
         setSelectedRange({ from: date, to: undefined });
       } else {
+        // Check if any date in the range is already booked
+        const range = eachDayOfInterval({ start: selectedRange.from, end: date });
+        const hasBookedDate = range.some((d) => 
+          bookedDates.includes(format(d, 'yyyy-MM-dd'))
+        );
+
+        if (hasBookedDate) {
+          toast.error('The selected range contains unavailable dates.');
+          setSelectedRange({ from: date, to: undefined });
+          return;
+        }
+
         setSelectedRange({ from: selectedRange.from, to: date });
       }
     }
@@ -135,11 +147,11 @@ export default function DateRangeCalendarSection({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* ===== 🖥️ Desktop Calendar View ===== */}
-      <Card className="bg-main hidden sm:block">
-        <CardHeader>
-          <CardTitle className="text-foreground flex items-center gap-2">
-            <CalendarDays className="w-5 h-5 text-[#bf9310]" />
-            Select Your Dates
+      <Card className="bg-royal-obsidian/5 border border-royal-gold/10 rounded-none overflow-hidden">
+        <CardHeader className="border-b border-royal-gold/10">
+          <CardTitle className="text-foreground flex items-center gap-4">
+            <CalendarDays className="w-5 h-5 text-royal-gold" />
+            <span className="royal-label">Select Your Dates</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -172,13 +184,13 @@ export default function DateRangeCalendarSection({
       </div>
 
       {/* ===== 🧾 Booking Summary ===== */}
-      <Card className="bg-main flex flex-col h-full">
-        <CardHeader className="flex flex-col md:flex-row items-center justify-between">
-          <CardTitle className="text-foreground">Summary</CardTitle>
-          <p className="text-sm text-center text-slate-300 flex justify-center items-center gap-2">
-            <Moon className="text-[#bf9310]" />
-            <span className="text-foreground font-semibold">
-              {numberOfNights} night{numberOfNights > 1 ? 's' : ''}
+      <Card className="bg-royal-obsidian/5 border border-royal-gold/10 rounded-none flex flex-col h-full">
+        <CardHeader className="flex flex-col md:flex-row items-center justify-between border-b border-royal-gold/10">
+          <CardTitle className="royal-label">Reservation Summary</CardTitle>
+          <p className="text-xs text-center flex justify-center items-center gap-3 uppercase tracking-widest font-bold text-royal-gold">
+            <Moon className="w-4 h-4" />
+            <span>
+              {numberOfNights} night{numberOfNights > 1 ? 's' : ''} stay
             </span>
           </p>
         </CardHeader>
@@ -188,22 +200,22 @@ export default function DateRangeCalendarSection({
             <>
               {/* 🗓️ Check-in / Check-out Info */}
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-foreground text-sm">Check-in</label>
-                    <div className="p-3 bg-slate-700/30 rounded-lg text-foreground">
-                      {format(selectedRange.from, 'MMM dd, yyyy')}
-                      <div className="text-foreground text-xs flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> 3:00 PM
+                    <label className="royal-label !text-[10px] mb-3 block">Check-in</label>
+                    <div className="p-5 bg-white/5 border border-white/10 rounded-none text-white">
+                      <div className="text-lg font-serif italic mb-1">{format(selectedRange.from, 'MMM dd, yyyy')}</div>
+                      <div className="text-royal-gold text-[10px] flex items-center gap-2 uppercase tracking-widest font-bold">
+                        <Clock className="w-3 h-3" /> 15:00 HRS
                       </div>
                     </div>
                   </div>
                   <div>
-                    <label className="text-foreground text-sm">Check-out</label>
-                    <div className="p-3 bg-slate-700/30 rounded-lg text-foreground">
-                      {format(selectedRange.to, 'MMM dd, yyyy')}
-                      <div className="text-foreground text-xs flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> 11:00 AM
+                    <label className="royal-label !text-[10px] mb-3 block">Check-out</label>
+                    <div className="p-5 bg-white/5 border border-white/10 rounded-none text-white">
+                      <div className="text-lg font-serif italic mb-1">{format(selectedRange.to, 'MMM dd, yyyy')}</div>
+                      <div className="text-royal-gold text-[10px] flex items-center gap-2 uppercase tracking-widest font-bold">
+                        <Clock className="w-3 h-3" /> 11:00 HRS
                       </div>
                     </div>
                   </div>
@@ -211,29 +223,31 @@ export default function DateRangeCalendarSection({
               </div>
 
               {/* 🧾 Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-3 pt-6">
-                <Button
+              <div className="flex flex-col gap-4 pt-8">
+                <button
                   onClick={handleBookNow}
-                  className="flex-1 bg-[#bf9310] text-foreground hover:bg-[#a87e0d]"
+                  className="royal-button-solid w-full"
                 >
-                  Book Now
-                </Button>
-                <Button
+                  RESERVE NOW
+                </button>
+                <button
                   onClick={handleAddToCart}
-                  variant="outline"
-                  className="flex-1 text-foreground border-slate-600 bg-slate-700/30 hover:bg-slate-700/50"
+                  className="royal-button w-full"
                 >
-                  <ShoppingCart className="w-4 h-4 mr-2" />
-                  Add to Cart
-                </Button>
+                  <ShoppingCart className="w-4 h-4 mr-3" />
+                  ADD TO CONCIERGE
+                </button>
               </div>
             </>
           ) : (
             // ❗ Message when no dates selected
-            <div className="text-center py-8 flex-1 flex flex-col justify-center">
-              <CalendarDays className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-              <p className="text-foreground">
-                Select your check-in and check-out dates to see pricing
+            <div className="text-center py-12 flex-1 flex flex-col justify-center items-center">
+              <div className="w-16 h-16 border border-royal-gold/20 flex items-center justify-center mb-6">
+                <CalendarDays className="w-6 h-6 text-royal-gold/40" />
+              </div>
+              <h4 className="royal-label !text-[10px] mb-2">Dates Required</h4>
+              <p className="text-foreground/40 text-xs max-w-[200px] mx-auto uppercase tracking-widest leading-relaxed">
+                Please select your check-in and check-out dates to view availability.
               </p>
             </div>
           )}

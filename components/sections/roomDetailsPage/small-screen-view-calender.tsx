@@ -1,5 +1,5 @@
 // ====================================================
-// 🗓️ SimpleCalendar Component
+// 🗓️ SmallScreenCalendar Component – Premium Mobile View
 // ====================================================
 
 import React, { useState } from 'react';
@@ -13,6 +13,7 @@ import {
   isSameMonth,
   isSameDay,
 } from 'date-fns';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // ===== 🔹 Props & Weekdays ===== //
 interface SimpleCalendarProps {
@@ -21,7 +22,7 @@ interface SimpleCalendarProps {
   bookedDates?: string[];
 }
 
-const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
 export default function SmallScreenCalendar({
   onSelectDate,
@@ -50,46 +51,46 @@ export default function SmallScreenCalendar({
   const nextMonth = () => setCurrentMonth(addDays(monthEnd, 1));
 
   return (
-    <div className="p-4 bg-main rounded-lg text-foreground font-sans max-w-md mx-auto">
+    <div className="p-6 bg-royal-obsidian/5 border border-royal-gold/10 rounded-none w-full max-w-md mx-auto">
       {/* ===== 🔹 Month Navigation ===== */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-6">
         <button
           onClick={prevMonth}
-          className="px-1 md:px-2 bg-[#bf9310] rounded text-foreground hover:bg-[#a87e0d]"
+          className="p-2 text-royal-gold border border-royal-gold/10 hover:border-royal-gold transition-all"
           aria-label="Previous Month"
         >
-          &lt;
+          <ChevronLeft className="w-4 h-4" />
         </button>
 
-        <div className="text-sm font-bold">
-          {format(currentMonth, 'MMMM yyyy')}
+        <div className="text-base font-serif font-bold text-foreground">
+          {format(currentMonth, 'MMMM')} <span className="text-royal-gold italic">{format(currentMonth, 'yyyy')}</span>
         </div>
 
         <button
           onClick={nextMonth}
-          className="px-1 md:px-2 bg-[#bf9310] rounded text-foreground hover:bg-[#a87e0d]"
+          className="p-2 text-royal-gold border border-royal-gold/10 hover:border-royal-gold transition-all"
           aria-label="Next Month"
         >
-          &gt;
+          <ChevronRight className="w-4 h-4" />
         </button>
       </div>
 
       {/* ===== 🔹 Weekday Labels ===== */}
-      <div className="grid grid-cols-7 text-center text-[#bf9310] font-medium mb-2">
+      <div className="grid grid-cols-7 text-center mb-2">
         {daysOfWeek.map((dayName, index) => (
-          <div key={index} className="py-1 border-b border-gray-700">
+          <div key={index} className="text-[9px] font-bold tracking-widest text-royal-gold/60 py-2 border-b border-royal-gold/10">
             {dayName}
           </div>
         ))}
       </div>
 
       {/* ===== 🔹 Date Grid ===== */}
-      <div className="grid grid-cols-7 gap-1 text-center">
+      <div className="grid grid-cols-7 gap-1 mt-2">
         {days.map((dayItem) => {
           const isCurrentMonth = isSameMonth(dayItem, currentMonth);
           const formattedDay = format(dayItem, 'yyyy-MM-dd');
           const isBooked = bookedDates.includes(formattedDay);
-          const isPastDate = dayItem < new Date();
+          const isPastDate = dayItem < new Date(new Date().setHours(0,0,0,0));
 
           const isSelected =
             (selectedRange?.from && isSameDay(dayItem, selectedRange.from)) ||
@@ -109,22 +110,16 @@ export default function SmallScreenCalendar({
               onClick={() => onSelectDate(dayItem)}
               disabled={shouldDisable}
               className={`
-                py-2 rounded-md transition-colors
-                ${isSelected ? 'bg-yellow-400 text-black font-bold shadow-md' : ''}
-                ${isInRange ? 'bg-yellow-200 text-black' : ''}
-                ${shouldDisable ? 'bg-red-600 text-foreground cursor-not-allowed' : ''}
-                ${
-                  !shouldDisable && isCurrentMonth && !isSelected && !isInRange
-                    ? 'hover:bg-yellow-600'
-                    : ''
-                }
+                h-10 flex items-center justify-center transition-all border text-[11px] font-bold
+                ${isSelected ? 'bg-royal-gold text-royal-blue border-royal-gold' : ''}
+                ${isInRange ? 'bg-royal-gold/20 text-royal-gold border-royal-gold/10' : ''}
+                ${shouldDisable ? 'bg-red-500/5 text-red-500/20 cursor-not-allowed border-transparent' : 'border-white/5 text-foreground/70 hover:bg-royal-gold hover:text-royal-blue'}
+                ${!isCurrentMonth ? 'opacity-0 pointer-events-none' : ''}
               `}
               aria-label={format(dayItem, 'eeee, MMMM do, yyyy')}
               type="button"
             >
-              <div className="text-sm font-semibold">
-                {format(dayItem, 'd')}
-              </div>
+              {format(dayItem, 'd')}
             </button>
           );
         })}

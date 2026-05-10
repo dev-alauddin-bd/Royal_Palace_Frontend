@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { useLoginUserMutation } from "@/redux/features/auth/authApi"
 import { setUser } from "@/redux/features/auth/authSlice"
 import { useAppDispatch } from "@/redux/hooks"
+import { Crown, Mail, Lock, ArrowRight, UserCog, UserCircle, ShieldCheck } from "lucide-react"
 
 interface LoginFormData {
   email: string
@@ -27,18 +28,15 @@ export default function LoginPage() {
     register,
     handleSubmit,
     reset,
-    setValue, // Added setValue to programmatically set form values
+    setValue,
     formState: { errors },
   } = useForm<LoginFormData>()
 
-  // === Handle form submission ===
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await login(data).unwrap()
       const { user, accessToken } = response.data
-      // === Save user and token to Redux store ===
       dispatch(setUser({ user, token: accessToken }))
-      // === Reset form and navigate ===
       reset()
       router.replace(redirectTo)
     } catch (err: any) {
@@ -46,139 +44,152 @@ export default function LoginPage() {
     }
   }
 
-  // Function to handle role-based login pre-fill and submission
   const handleRoleLogin = async (role: "guest" | "receptionist" | "admin") => {
     let email = ""
     let password = ""
 
     switch (role) {
       case "guest":
-        email = process.env.NEXT_PUBLIC_GUEST_EMAIL!
-        password = process.env.NEXT_PUBLIC_GUEST_PASSWORD!
+        email = process.env.NEXT_PUBLIC_GUEST_EMAIL || "guest@royalpalace.com"
+        password = process.env.NEXT_PUBLIC_GUEST_PASSWORD || "Guest@123"
         break
       case "receptionist":
-        email = process.env.NEXT_PUBLIC_RECEPTIONIST_EMAIL!
-        password = process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD!
+        email = process.env.NEXT_PUBLIC_RECEPTIONIST_EMAIL || "reception@royalpalace.com"
+        password = process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD || "Reception@123"
         break
       case "admin":
-        email = process.env.NEXT_PUBLIC_ADMIN_EMAIL!
-        password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD!
-        break
-      default:
+        email = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@royalpalace.com"
+        password = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "Admin@123"
         break
     }
 
     setValue("email", email)
     setValue("password", password)
-    
-    // Automatically submit the form after setting values
     await handleSubmit(onSubmit)()
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      {/* === Background image overlay === */}
-      <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-10" />
-      <div className="relative w-full max-w-md">
-        {/* === Login Card === */}
-        <div className="bg-main rounded-2xl p-8 shadow-2xl">
-          {/* === Header === */}
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold title mb-2">Welcome Back</h1>
-            <p className="text-foreground">Sign in to your resort account</p>
-          </div>
-          {/* === Login Form === */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* === Email Input === */}
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-foreground font-medium">
-                Email Address
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^\S+@\S+$/i,
-                    message: "Invalid email address",
-                  },
-                })}
-                className="bg-background border-slate-600 text-foreground placeholder:text-slate-400 focus:border-orange-500 focus:ring-orange-500/20"
-              />
-              {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
-            </div>
-            {/* === Password Input === */}
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-foreground font-medium">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                {...register("password", {
-                  required: "Password is required",
-                  minLength: {
-                    value: 6,
-                    message: "Minimum 6 characters required",
-                  },
-                })}
-                className="bg-background border-slate-600 text-foreground placeholder:text-slate-400 focus:border-orange-500 focus:ring-orange-500/20"
-              />
-              {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
-            </div>
-        
-             {/* === Submit Button === */}
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-[#bf9310] cursor-pointer hover:bg-yellow-500 text-foreground font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg hover:shadow-orange-500/25 disabled:opacity-50"
-            >
-             {isLoading ? "Loading..." : "Sign In"} 
-            </Button>
-          
-            
-          </form>
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-royal-obsidian">
+      {/* Background with luxury pattern */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 bg-black/80 z-10" />
+        <img 
+          src="/images/Hero-Banner.webp" 
+          alt="Luxury background" 
+          className="w-full h-full object-cover opacity-30"
+        />
+      </div>
 
-          {/* === Role-based Login Buttons === */}
-          <div className="mt-6 flex flex-col  gap-3"> {/* Changed to flex-row and gap */}
-            <Button
-              onClick={() => handleRoleLogin("guest")}
-              disabled={isLoading}
-              className="w-full bg-[#bf9310] cursor-pointer hover:bg-yellow-500 text-foreground   border  font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg "
-            >
-            Login as Guest
-            </Button>
-            {/* <Button
-              onClick={() => handleRoleLogin("receptionist")}
-              disabled={isLoading}
-              className="w-full bg-transparent hover:bg-transparent cursor-pointer  border  text-white font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg "
-            >
-            Login as Receptionist
-            </Button> */}
-            {/* <Button
-              onClick={() => handleRoleLogin("admin")}
-              disabled={isLoading}
-               className="w-full bg-[#bf9310] cursor-pointer hover:bg-yellow-500 text-foreground   border font-semibold py-3 rounded-lg transition-all duration-200 shadow-lg "
-            >
-              Login as Admin
-            </Button> */}
+      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        {/* Left Side: Branding & Info */}
+        <div className="hidden lg:flex flex-col space-y-8 pr-12">
+          <div className="flex flex-col space-y-4">
+            <div className="w-16 h-16 border border-royal-gold/30 rounded-full flex items-center justify-center">
+              <Crown className="h-8 w-8 text-royal-gold" />
+            </div>
+            <h1 className="text-5xl font-serif font-bold royal-gradient-text tracking-[0.2em] uppercase leading-tight">
+              Sovereign <br /> Access
+            </h1>
           </div>
+          <p className="text-white/60 text-lg font-light leading-relaxed max-w-md">
+            Welcome to the Royal Palace. Please authenticate your credentials to enter your private sanctuary and manage your exquisite stay.
+          </p>
+          <div className="flex items-center space-x-4 pt-4">
+            <div className="h-px w-12 bg-royal-gold/30"></div>
+            <span className="text-[10px] text-royal-gold uppercase tracking-[0.4em] font-bold">Trusted by Royalty</span>
+          </div>
+        </div>
 
-          {/* === Signup Redirect Link === */}
-          <div className="text-center mt-6">
-            <p className="text-foreground">
-              Don't have an account?{" "}
-              <Link href="/signup" className="title hover:text-yellow-500 font-medium transition-colors">
-                Create one now
-              </Link>
-            </p>
+        {/* Right Side: Login Card */}
+        <div className="glass-panel p-8 md:p-10 border-royal-gold/10 relative overflow-hidden group shadow-2xl">
+          <div className="relative z-10">
+            <div className="text-center mb-10 lg:hidden">
+              <Crown className="h-8 w-8 text-royal-gold mx-auto mb-4" />
+              <h2 className="text-2xl font-serif font-bold text-white uppercase tracking-widest">Royal Login</h2>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <div className="space-y-2">
+                <Label className="text-[10px] uppercase tracking-widest text-royal-gold/80 font-bold">Email Sovereign</Label>
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-royal-gold/40" />
+                  <Input
+                    {...register("email", { required: "Required" })}
+                    placeholder="your@email.com"
+                    className="h-12 pl-12 bg-white/5 border-royal-gold/20 text-white focus:border-royal-gold rounded-none"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-[10px] uppercase tracking-widest text-royal-gold/80 font-bold">Security Key</Label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-royal-gold/40" />
+                  <Input
+                    type="password"
+                    {...register("password", { required: "Required" })}
+                    placeholder="••••••••"
+                    className="h-12 pl-12 bg-white/5 border-royal-gold/20 text-white focus:border-royal-gold rounded-none"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full royal-button h-12 text-xs tracking-[0.2em]"
+              >
+                {isLoading ? "AUTHENTICATING..." : "SIGN IN"}
+              </Button>
+            </form>
+
+            {/* Quick Test Credentials */}
+            <div className="mt-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="h-px flex-1 bg-royal-gold/10"></div>
+                <span className="text-[9px] text-royal-gold/40 uppercase tracking-widest font-bold whitespace-nowrap">Testing Protocols</span>
+                <div className="h-px flex-1 bg-royal-gold/10"></div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => handleRoleLogin("admin")}
+                  className="flex flex-col items-center gap-2 p-3 bg-white/5 border border-royal-gold/10 hover:border-royal-gold/40 hover:bg-royal-gold/5 transition-all group/role"
+                >
+                  <ShieldCheck className="w-5 h-5 text-royal-gold group-hover/role:scale-110 transition-transform" />
+                  <span className="text-[8px] text-white/60 group-hover/role:text-royal-gold uppercase tracking-widest font-bold">Admin</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRoleLogin("receptionist")}
+                  className="flex flex-col items-center gap-2 p-3 bg-white/5 border border-royal-gold/10 hover:border-royal-gold/40 hover:bg-royal-gold/5 transition-all group/role"
+                >
+                  <UserCog className="w-5 h-5 text-royal-gold group-hover/role:scale-110 transition-transform" />
+                  <span className="text-[8px] text-white/60 group-hover/role:text-royal-gold uppercase tracking-widest font-bold">Receptionist</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRoleLogin("guest")}
+                  className="flex flex-col items-center gap-2 p-3 bg-white/5 border border-royal-gold/10 hover:border-royal-gold/40 hover:bg-royal-gold/5 transition-all group/role"
+                >
+                  <UserCircle className="w-5 h-5 text-royal-gold group-hover/role:scale-110 transition-transform" />
+                  <span className="text-[8px] text-white/60 group-hover/role:text-royal-gold uppercase tracking-widest font-bold">Guest</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="text-center mt-10 pt-6 border-t border-royal-gold/10">
+              <p className="text-white/40 text-[10px] tracking-wide uppercase">
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-royal-gold hover:text-white font-bold ml-2 transition-colors inline-flex items-center group">
+                  REGISTER NOW <ArrowRight className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
       </div>
-      {/* === Toast Container for Notifications === */}
       <Toaster position="top-right" />
     </div>
   )

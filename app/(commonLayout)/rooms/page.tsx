@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -11,6 +11,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Pagination from '@/components/shared/pagination';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 
 interface IRoom {
   _id: string;
@@ -34,15 +35,26 @@ function useDebounce<T>(value: T, delay: number): T {
   return debounced;
 }
 
-export default function RoomsPage() {
+// Separate component to use search params
+function RoomsContent() {
   const [tab, setTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  
+  const searchParams = useSearchParams();
+  const urlCheckIn = searchParams.get('checkInDate');
+  const urlCheckOut = searchParams.get('checkOutDate');
+  const urlAdults = searchParams.get('adults');
+  const urlChildren = searchParams.get('children');
 
   const { data, isLoading } = useFilterAllRoomsQuery({
     searchTerm: debouncedSearchTerm,
     type: tab === 'all' ? undefined : tab,
+    checkInDate: urlCheckIn || undefined,
+    checkOutDate: urlCheckOut || undefined,
+    adults: urlAdults ? Number(urlAdults) : undefined,
+    children: urlChildren ? Number(urlChildren) : undefined,
     limit: 6,
     page,
   });
@@ -62,11 +74,11 @@ export default function RoomsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center space-y-4">
-          <div className="w-12 h-12 border-4 border-[#bf9310] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#bf9310] font-semibold text-lg">
-            Loading rooms...
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center space-y-6">
+          <div className="w-16 h-16 border-2 border-royal-gold border-t-transparent animate-spin" />
+          <p className="text-royal-gold font-serif font-bold uppercase tracking-[0.3em] text-sm">
+            Curating your experience...
           </p>
         </div>
       </div>
@@ -77,32 +89,32 @@ export default function RoomsPage() {
     <div className="min-h-screen container mx-auto px-4 py-8 md:py-12">
       {/* ===== Title Section with Animation ===== */}
       <motion.div
-        className="flex items-center justify-center px-4 text-center flex-wrap mb-8"
+        className="flex items-center justify-center px-4 text-center flex-wrap mb-16"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-20 sm:w-32 mr-4" />
+        <div className="h-px bg-royal-gold/20 w-20 sm:w-32 mr-6" />
         <div className="flex items-center justify-center">
-          <Bed className="w-5 h-5 sm:w-6 sm:h-6 title mr-2" />
-          <h2 className="title text-base sm:text-lg md:text-xl font-medium tracking-[0.2em] uppercase">
-            Hotel Rooms
+          <Bed className="w-5 h-5 sm:w-6 sm:h-6 text-royal-gold mr-4" />
+          <h2 className="royal-label">
+            Our Luxury Rooms
           </h2>
-          <Bed className="w-5 h-5 sm:w-6 sm:h-6 title ml-2" />
+          <Bed className="w-5 h-5 sm:w-6 sm:h-6 text-royal-gold ml-4" />
         </div>
-        <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-20 sm:w-32 ml-4" />
+        <div className="h-px bg-royal-gold/20 w-20 sm:w-32 ml-6" />
       </motion.div>
 
       {/* ===== Filter controls ===== */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16 border-b border-royal-gold/10 pb-12">
         <select
           value={tab}
           onChange={(e) => onTabChange(e.target.value)}
-          className="block md:hidden w-full border rounded px-4 py-2 bg-[#191a1e] text-white text-sm"
+          className="block md:hidden w-full border border-royal-gold/20 px-4 py-3 bg-royal-obsidian text-white text-xs uppercase tracking-widest outline-none focus:border-royal-gold transition-colors"
         >
           {roomTypes.map((t) => (
             <option key={t} value={t}>
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t.toUpperCase()}
             </option>
           ))}
         </select>
@@ -112,12 +124,12 @@ export default function RoomsPage() {
           onValueChange={onTabChange}
           className="hidden md:block"
         >
-          <TabsList className="flex-wrap justify-center md:justify-start">
+          <TabsList className="bg-transparent border-none gap-6">
             {roomTypes.map((t) => (
               <TabsTrigger
                 key={t}
                 value={t}
-                className="capitalize text-sm md:text-base px-4 py-1"
+                className="uppercase tracking-[0.3em] text-[10px] font-bold px-0 py-2 data-[state=active]:text-royal-gold data-[state=active]:border-b-2 data-[state=active]:border-royal-gold rounded-none transition-all"
               >
                 {t}
               </TabsTrigger>
@@ -126,10 +138,10 @@ export default function RoomsPage() {
         </Tabs>
 
         <Input
-          placeholder="Search rooms..."
+          placeholder="SEARCH SUITES..."
           value={searchTerm}
           onChange={onSearchChange}
-          className="w-full md:w-80"
+          className="w-full md:w-80 bg-royal-obsidian/5 border-royal-gold/20 rounded-none h-12 text-[10px] tracking-widest placeholder:text-foreground/30 focus-visible:ring-0 focus-visible:border-royal-gold"
         />
       </div>
 
@@ -156,39 +168,51 @@ export default function RoomsPage() {
             }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           >
-            <Card className="group relative p-0 bg-black rounded-none overflow-hidden hover:scale-105 transition-transform duration-500">
-              <div className="relative h-80 sm:h-96 overflow-hidden">
+            <Card className="group relative w-full overflow-hidden bg-white dark:bg-royal-obsidian border-royal-gold/10 rounded-none p-0 transform transition-all duration-700 hover:border-royal-gold/40 shadow-xl">
+              <div className="relative h-[480px] overflow-hidden">
                 <Image
                   src={room.images[0] || '/placeholder.svg'}
                   alt={room.title}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/70 transition-all duration-500" />
-                <div className="absolute top-4 right-4 bg-[#bf9310] text-white px-3 py-1 text-xs md:text-sm font-semibold">
-                  ${room.price}/night
-                </div>
-                <div className="absolute bottom-6 left-6 text-white space-y-2 text-sm md:text-base">
-                  <div className="font-light text-lg md:text-xl">
-                    {room.title}
+                <div className="absolute inset-0 bg-gradient-to-t from-royal-obsidian via-royal-obsidian/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-500" />
+                
+                {/* Price Tag */}
+                <div className="absolute top-8 right-8">
+                  <div className="bg-royal-gold text-royal-blue px-6 py-2 font-serif font-bold text-[10px] tracking-[0.2em] uppercase">
+                    ${room.price} / NIGHT
                   </div>
-                  <div className="flex gap-1">
+                </div>
+
+                {/* Content */}
+                <div className="absolute bottom-10 left-10 right-10 text-white z-10">
+                  <div className="flex gap-1.5 mb-5">
                     {[...Array(5)].map((_, i) => (
                       <Star
                         key={i}
-                        className="w-4 h-4 fill-[#bf9310] text-[#bf9310]"
+                        className="w-3.5 h-3.5 fill-royal-gold text-royal-gold"
                       />
                     ))}
                   </div>
-                  <Link href={`/rooms/${room._id}`}>
-                    <Button
-                      variant="outline"
-                      className="mt-2 bg-transparent text-white border-white hover:bg-[#bf9310] hover:border-[#bf9310] rounded-none cursor-pointer"
+                  
+                  <h3 className="text-3xl font-serif font-bold mb-6 group-hover:text-royal-gold transition-colors duration-300 leading-tight">
+                    {room.title}
+                  </h3>
+
+                  {/* Button */}
+                  <Link href={`/rooms/${room._id}`} className="block">
+                    <button
+                      className="w-full royal-button flex items-center justify-center group/btn"
                     >
-                      VIEW DETAILS <ArrowRight className="w-4 h-4 inline" />
-                    </Button>
+                      EXPLORE SUITE
+                      <ArrowRight className="w-4 h-4 ml-3 transition-transform duration-500 group-hover/btn:translate-x-2" />
+                    </button>
                   </Link>
                 </div>
+
+                {/* Decorative Frame */}
+                <div className="absolute inset-5 border border-white/10 pointer-events-none group-hover:border-royal-gold/20 transition-colors duration-500" />
               </div>
             </Card>
           </motion.div>
@@ -198,5 +222,17 @@ export default function RoomsPage() {
       {/* ===== Pagination ===== */}
       <Pagination page={page} totalPages={totalPages} setPage={setPage} />
     </div>
+  );
+}
+
+export default function RoomsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-16 h-16 border-2 border-royal-gold border-t-transparent animate-spin" />
+      </div>
+    }>
+      <RoomsContent />
+    </Suspense>
   );
 }

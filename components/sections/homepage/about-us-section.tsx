@@ -14,18 +14,18 @@ const AboutUsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="mb-20"
+          className="mb-24"
         >
-          <div className="flex items-center justify-center mb-8">
-            <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 mr-6" />
+          <div className="flex items-center justify-center mb-10">
+            <div className="h-px bg-royal-gold/20 w-32 mr-8" />
             <div className="flex items-center">
-              <Crown className="w-6 h-6 text-[#bf9310] mr-3" />
-              <h2 className="text-[#bf9310] text-base md:text-sm font-medium tracking-[0.2em] uppercase">
+              <Crown className="w-5 h-5 text-royal-gold mr-4" />
+              <h2 className="royal-label">
                 About Our Palace
               </h2>
-              <Crown className="w-6 h-6 text-[#bf9310] ml-3" />
+              <Crown className="w-5 h-5 text-royal-gold ml-4" />
             </div>
-            <div className="h-px bg-gradient-to-r from-transparent via-[#bf9310] to-transparent w-32 ml-6" />
+            <div className="h-px bg-royal-gold/20 w-32 ml-8" />
           </div>
 
           <motion.h1
@@ -33,38 +33,40 @@ const AboutUsSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             viewport={{ once: true }}
-            className="text-base md:text-3xl lg:text-5xl font-medium leading-snug text-center max-w-6xl mx-auto text-foreground"
+            className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-5xl mx-auto text-foreground"
           >
-            Where Royal Heritage Meets
-            <br />
-            Modern Luxury & Elegance
+            Where Royal Heritage Meets <br />
+            <span className="text-royal-gold italic">Modern Luxury & Elegance</span>
           </motion.h1>
         </motion.div>
 
         {/* ===== Content Grid ===== */}
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           {/* 🖼️ Image Section with Badge */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="relative"
           >
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
+            <div className="relative aspect-[4/3] overflow-hidden border border-royal-gold/10">
               <Image
                 src="/images/reception.avif"
                 alt="Royal Palace Hotel Grand Lobby"
                 fill
-                className="object-cover"
+                className="object-cover transition-transform duration-1000 hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20" />
+              <div className="absolute inset-0 bg-black/20" />
             </div>
 
-            <div className="absolute -bottom-6 -right-6 bg-[#bf9310] p-4 rounded-2xl shadow-2xl hidden md:block">
-              <Award className="w-8 h-8 text-slate-900" />
-              <div className="text-slate-900 font-bold text-sm mt-1">
-                5-Star
+            <div className="absolute -bottom-8 -right-8 bg-royal-obsidian border border-royal-gold p-8 shadow-2xl hidden md:block">
+              <Award className="w-10 h-10 text-royal-gold mb-4" />
+              <div className="text-white font-serif font-bold text-xl uppercase tracking-widest">
+                Five Star
+              </div>
+              <div className="text-royal-gold text-[10px] font-bold uppercase tracking-[0.3em] mt-1">
+                Luxury Standard
               </div>
             </div>
           </motion.div>
@@ -77,7 +79,7 @@ const AboutUsSection = () => {
             viewport={{ once: true }}
           >
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-royal-gold/10 pb-16">
               {[
                 { value: '150+', label: 'Royal Suites' },
                 { value: '5.0', label: 'Royal Rating' },
@@ -89,12 +91,12 @@ const AboutUsSection = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.1 * idx }}
                   viewport={{ once: true }}
-                  className="text-center"
+                  className="text-left"
                 >
-                  <div className="text-5xl font-light text-[#bf9310] mb-2">
+                  <div className="text-5xl font-serif font-bold text-royal-gold mb-3">
                     {stat.value}
                   </div>
-                  <div className="text-foreground text-sm uppercase tracking-wide">
+                  <div className="text-foreground/60 text-[10px] font-bold uppercase tracking-[0.3em]">
                     {stat.label}
                   </div>
                 </motion.div>
@@ -102,24 +104,24 @@ const AboutUsSection = () => {
             </div>
 
             {/* Description */}
-            <div className="space-y-6 mb-10">
+            <div className="space-y-8 mb-16">
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
                 viewport={{ once: true }}
-                className="text-foreground leading-relaxed text-base md:text-lg"
+                className="text-foreground leading-relaxed text-lg md:text-xl font-serif italic"
               >
-                Nestled in the heart of the city, our Royal Palace Hotel stands
+                "Nestled in the heart of the city, our Royal Palace Hotel stands
                 as a testament to timeless elegance and unmatched luxury,
-                offering a serene escape amidst urban vibrance.
+                offering a serene escape amidst urban vibrance."
               </motion.p>
               <motion.p
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 viewport={{ once: true }}
-                className="text-base md:text-lg text-foreground leading-relaxed"
+                className="text-base md:text-lg text-foreground/70 leading-relaxed"
               >
                 From our award-winning spa to curated fine dining experiences,
                 every corner of the palace is crafted to exceed guest
@@ -133,19 +135,18 @@ const AboutUsSection = () => {
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
               {[
                 { icon: Users, label: '24/7 Butler Service' },
                 { icon: Star, label: 'Michelin Dining' },
-                { icon: Crown, label: 'Royal Heritage' },
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}
-                  className="flex items-center justify-center bg-main px-4 py-2 rounded-full border border-slate-700"
+                  className="flex items-center bg-royal-obsidian/5 p-6 border border-royal-gold/10"
                 >
-                  <Icon className="w-4 h-4 text-[#bf9310] mr-2" />
-                  <span className="text-sm text-foreground">{label}</span>
+                  <Icon className="w-5 h-5 text-royal-gold mr-4" />
+                  <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-foreground">{label}</span>
                 </div>
               ))}
             </motion.div>
