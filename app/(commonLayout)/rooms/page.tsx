@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, ArrowRight, Bed } from 'lucide-react';
+import { Star, ArrowRight, Bed, Sparkles } from 'lucide-react';
 import { useFilterAllRoomsQuery } from '@/redux/features/room/room.api';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -20,6 +20,7 @@ interface IRoom {
   type: string;
   price: number;
   images: string[];
+  description?: string;
 }
 
 const roomTypes = ['all', 'luxury', 'suite', 'deluxe', 'twine'];
@@ -77,6 +78,33 @@ function RoomsContent() {
     setTab(newTab);
     setPage(1);
   };
+
+  // AI Recommendation State
+  const [recommendation, setRecommendation] = useState<any>(null);
+  const [isRecLoading, setIsRecLoading] = useState(false);
+
+  const fetchRecommendation = async (force = false) => {
+    if (rooms.length === 0) return;
+    setIsRecLoading(true);
+    try {
+      const response = await fetch('/api/rooms/recommendation', {
+        method: 'POST',
+        body: JSON.stringify({ rooms, forceRefresh: force }),
+      });
+      const data = await response.json();
+      setRecommendation(data);
+    } catch (error) {
+      console.error("Failed to fetch recommendation");
+    } finally {
+      setIsRecLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (rooms.length > 0 && !recommendation) {
+      fetchRecommendation(); // Initial fetch (will be cached by API)
+    }
+  }, [rooms]);
 
   if (isLoading) {
     return (
@@ -177,6 +205,66 @@ function RoomsContent() {
         </div>
       </div>
 
+      {/* AI Smart Recommendation */}
+      <div className="mb-16">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass-panel p-8 border-royal-gold/30 bg-royal-gold/5 relative overflow-hidden"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
+            <div className="w-full md:w-1/3 aspect-video relative overflow-hidden">
+               <Image 
+                src={recommendation?.image || "/images/Hero-Banner.webp"} 
+                alt="AI Recommendation" 
+                fill 
+                className="object-cover"
+               />
+               <div className="absolute inset-0 bg-royal-obsidian/40" />
+               <div className="absolute top-4 left-4 bg-royal-gold text-royal-blue px-3 py-1 text-[8px] font-bold uppercase tracking-widest">
+                  AI Recommended
+               </div>
+            </div>
+            <div className="flex-1 space-y-4">
+               <div className="flex items-center justify-between">
+                 <div className="flex items-center gap-2 text-royal-gold">
+                    <Sparkles className={`w-4 h-4 ${isRecLoading ? "animate-spin" : ""}`} />
+                    <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Personalized Selection</span>
+                 </div>
+                 <button 
+                  onClick={() => fetchRecommendation(true)}
+                  disabled={isRecLoading}
+                  className="text-royal-gold/40 hover:text-royal-gold transition-colors p-2"
+                  title="Update AI Pick (Uses Tokens)"
+                 >
+                   <motion.div animate={{ rotate: isRecLoading ? 360 : 0 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}>
+                    <Star className="w-4 h-4" />
+                   </motion.div>
+                 </button>
+               </div>
+               {isRecLoading ? (
+                  <div className="animate-pulse space-y-4">
+                    <div className="h-8 bg-white/10 w-3/4" />
+                    <div className="h-12 bg-white/5 w-full" />
+                  </div>
+               ) : (
+                <>
+                  <h3 className="text-3xl font-serif font-bold text-white">{recommendation?.roomTitle || "Selecting the finest..."}</h3>
+                  <p className="text-white/60 text-sm font-light leading-relaxed max-w-2xl">
+                    {recommendation?.explanation || "Curating your sovereign experience based on our distinguished inventory."}
+                  </p>
+                  <Link href={recommendation?.roomId ? `/rooms/${recommendation.roomId}` : "#"}>
+                    <button className="royal-button !w-auto px-8">EXPLORE RECOMMENDATION</button>
+                  </Link>
+                </>
+               )}
+            </div>
+          </div>
+          {/* Decorative Background */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-royal-gold/5 blur-3xl -mr-32 -mt-32" />
+        </motion.div>
+      </div>
+
       {/* ===== Rooms Grid with Motion ===== */}
       <motion.div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
@@ -231,6 +319,10 @@ function RoomsContent() {
                   <h3 className="text-3xl font-serif font-bold mb-6 group-hover:text-royal-gold transition-colors duration-300 leading-tight">
                     {room.title}
                   </h3>
+
+                  <p className="text-[11px] text-white/50 mb-6 line-clamp-2 uppercase tracking-widest font-light">
+                    {room.description || "Experience sovereignty in our meticulously designed luxury suites."}
+                  </p>
 
                   {/* Button */}
                   <Link href={`/rooms/${room._id}`} className="block">

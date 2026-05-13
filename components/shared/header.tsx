@@ -28,6 +28,8 @@ export function Header() {
     { name: 'Cart', href: '/cart' },
   ];
 
+  const authNavigation = user ? [...navigation, { name: 'Dashboard', href: '/dashboard/user' }] : navigation;
+
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
@@ -47,7 +49,7 @@ export function Header() {
           </div>
 
           <nav className="hidden lg:flex items-center space-x-10 text-[11px] font-bold uppercase tracking-[0.25em]">
-            {navigation.map((item) => (
+            {authNavigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -126,7 +128,7 @@ export function Header() {
             className="lg:hidden border-b border-royal-gold/10 bg-background"
           >
             <div className="space-y-4 px-6 pb-8 pt-4">
-              {navigation.map((item) => (
+              {authNavigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}

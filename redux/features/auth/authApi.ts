@@ -24,6 +24,14 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    // Firebase login mutation – receives a Firebase ID token and forwards to backend
+    firebaseLogin: build.mutation({
+      query: (idToken: string) => ({
+        url: '/auth/firebase',
+        method: 'POST',
+        body: { idToken },
+      }),
+    }),
 
     // ===== ✅ Get current logged-in user info =====
     getMe: build.query({
@@ -75,6 +83,8 @@ const authApi = baseApi.injectEndpoints({
 export const {
   useSignUpUserMutation,
   useLoginUserMutation,
+
+  useFirebaseLoginMutation,
   useGetMeQuery,
   useGetUsersQuery,
   useGetSingleUserQuery,

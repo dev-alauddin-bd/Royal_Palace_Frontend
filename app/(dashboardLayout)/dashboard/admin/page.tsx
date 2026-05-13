@@ -1,4 +1,5 @@
 "use client"
+import React, { useState, useEffect } from "react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -24,6 +25,8 @@ import {
   XCircle,
   AlertCircle,
   Crown,
+  Sparkles,
+  ShieldCheck,
 } from "lucide-react"
 
 import { useGetDashboardDataQuery } from "@/redux/features/dashboard/dashboardApi"
@@ -34,6 +37,42 @@ function AdminDashboard() {
   const { data: dashboardData, isLoading } = useGetDashboardDataQuery(undefined, {
     refetchOnMountOrArgChange: true,
   })
+
+  // AI Insights State - 🛡️ Moved to top to follow Rules of Hooks
+  const [aiInsight, setAiInsight] = useState<string>("")
+  const [isAiLoading, setIsAiLoading] = useState(false)
+
+  useEffect(() => {
+    if (dashboardData?.data?.stats) {
+      const fetchAiInsights = async () => {
+        setIsAiLoading(true);
+        try {
+          const response = await fetch('/api/admin/insights', {
+            method: 'POST',
+            body: JSON.stringify({ stats: dashboardData.data.stats }),
+          });
+          
+          if (!response.body) return;
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let accumulatedText = "";
+          
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            accumulatedText += decoder.decode(value, { stream: true });
+            setAiInsight(accumulatedText);
+          }
+        } catch (error) {
+          setAiInsight("The royal archives are temporarily inaccessible. Please try again shortly.");
+        } finally {
+          setIsAiLoading(false);
+        }
+      };
+
+      fetchAiInsights();
+    }
+  }, [dashboardData])
 
   if (isLoading) {
     return <Loader />
@@ -89,7 +128,7 @@ function AdminDashboard() {
     bookings: item.bookings,
   }));
 
-  const customerData = topCustomers.slice(0, 5).map((customer:any) => ({
+  const customerData = topCustomers.slice(0, 5).map((customer: any) => ({
     name: customer.name.length > 15 ? customer.name.substring(0, 15) + "..." : customer.name,
     spent: customer.totalSpent,
   }))
@@ -140,6 +179,37 @@ function AdminDashboard() {
           </Card>
         ))}
       </div>
+
+      {/* AI Insights Section */}
+      <Card className="glass-panel border-royal-gold/20 bg-royal-gold/5 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-4">
+          <Sparkles className={`w-5 h-5 text-royal-gold ${isAiLoading ? "animate-spin" : "animate-pulse"}`} />
+        </div>
+        <CardHeader>
+          <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+            <ShieldCheck className="h-5 w-5 text-royal-gold" />
+            Sovereign AI Insights
+          </CardTitle>
+          <CardDescription className="text-royal-gold/60 text-[10px] uppercase tracking-widest font-bold">Intelligent registry analysis</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="text-sm text-white/80 leading-relaxed font-light italic min-h-[60px]">
+              {isAiLoading && !aiInsight ? (
+                <span className="animate-pulse">Synchronizing with the divine logic...</span>
+              ) : (
+                <>"{aiInsight}"</>
+              )}
+            </div>
+            <div className="flex gap-4">
+              <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[8px] uppercase tracking-tighter">Growth Opportunity</Badge>
+              <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[8px] uppercase tracking-tighter">High Retention</Badge>
+            </div>
+          </div>
+        </CardContent>
+        {/* Decorative background element */}
+        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-royal-gold/5 blur-3xl rounded-full" />
+      </Card>
 
       {/* Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

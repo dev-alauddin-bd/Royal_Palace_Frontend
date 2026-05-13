@@ -44,7 +44,7 @@ const RoomAndSuites = () => {
         </motion.div>
 
         {/* ===== Rooms Grid ===== */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12">
           {roomsData?.data?.data?.map((room: IRoom, index: number) => (
             <motion.div
               key={room._id}
@@ -92,6 +92,10 @@ const RoomAndSuites = () => {
                     <h3 className="text-3xl font-serif font-bold mb-6 group-hover:text-royal-gold transition-colors duration-300 leading-tight">
                       {room.title}
                     </h3>
+
+                    <p className="text-[11px] text-white/50 mb-6 line-clamp-2 uppercase tracking-widest font-light">
+                      {room.description || "Indulge in a world of elegance and unparalleled comfort within our sovereign suites."}
+                    </p>
 
                     {/* Amenities */}
                     <div className="flex gap-8 text-[9px] uppercase tracking-[0.25em] font-bold text-white/60 mb-10 border-t border-white/10 pt-6">

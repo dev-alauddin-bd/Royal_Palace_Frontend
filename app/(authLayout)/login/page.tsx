@@ -7,11 +7,12 @@ import toast, { Toaster } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useLoginUserMutation } from "@/redux/features/auth/authApi"
+import { useFirebaseLoginMutation, useLoginUserMutation, } from "@/redux/features/auth/authApi"
 import { setUser } from "@/redux/features/auth/authSlice"
 import { useAppDispatch } from "@/redux/hooks"
 import { Crown, Mail, Lock, ArrowRight, UserCog, UserCircle, ShieldCheck } from "lucide-react"
 import Loader from "@/components/shared/Loader"
+import { GoogleLogin } from "@react-oauth/google";
 
 interface LoginFormData {
   email: string
@@ -24,6 +25,25 @@ export default function LoginPage() {
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get("redirectTo") || "/"
   const [login, { isLoading }] = useLoginUserMutation()
+  const [googleLogin, { isLoading: isGoogleLoading }] = useFirebaseLoginMutation()
+
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    if (!credentialResponse.credential) {
+      toast.error("Google Login Failed")
+      return
+    }
+
+    try {
+      const response = await googleLogin(credentialResponse.credential).unwrap()
+      const { user, accessToken } = response.data
+      dispatch(setUser({ user, token: accessToken }))
+      toast.success("Logged in with Google")
+      router.replace(redirectTo)
+    } catch (err: any) {
+      const errorMessage = err?.data?.message || err?.message || "Google Authentication Failed"
+      toast.error(errorMessage)
+    }
+  }
 
   const {
     register,
@@ -144,6 +164,30 @@ export default function LoginPage() {
               >
                 {isLoading ? "AUTHENTICATING..." : "SIGN IN"}
               </Button>
+
+              <div className="flex items-center gap-4 py-2">
+                <div className="h-px flex-1 bg-white/10"></div>
+                <span className="text-[9px] text-white/20 uppercase tracking-[0.3em] font-bold">Or Continue With</span>
+                <div className="h-px flex-1 bg-white/10"></div>
+              </div>
+
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-full flex justify-center">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => toast.error("Google Login Failed")}
+                    theme="filled_black"
+                    shape="square"
+                    size="large"
+                    width="100%"
+                    useOneTap
+                  />
+                </div>
+                {/* 
+                Keep the Facebook button or others as placeholders if needed, 
+                but I'll simplify the grid for now to focus on Google.
+                */}
+              </div>
             </form>
 
             {/* Quick Test Credentials */}

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import React, { useState } from 'react';
 import { CalendarDays } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Krona_One } from 'next/font/google';
 
 const HeroSection = () => {
   const [checkIn, setCheckIn] = useState('');
@@ -25,7 +26,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden">
+    <section className="relative h-[70vh] w-full overflow-hidden">
       {/* 🌄 Background image */}
       <Image
         src="/images/Hero-Banner.webp"

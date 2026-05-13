@@ -29,7 +29,6 @@ const statusColorMap: Record<string, string> = {
   cancel: 'bg-red-600',
   booked: 'bg-green-600',
   initialCancel: 'bg-orange-600',
-  // Add more if needed
 };
 export default function UserBookings() {
   const user = useSelector(selectCurrentUser);

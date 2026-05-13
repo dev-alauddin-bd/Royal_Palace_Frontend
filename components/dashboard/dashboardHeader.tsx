@@ -7,10 +7,13 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Bell, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useLogout } from '@/hooks/useLogout';
+import { DropdownMenuInNav } from '../shared/dropdown-menu';
 
 export function DashboardHeader() {
   // ========== 🌗 Theme Setup ========== //
   const { theme, setTheme } = useTheme();
+  const logout = useLogout();
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
@@ -51,6 +54,11 @@ export function DashboardHeader() {
               <Moon className="w-4 h-4" />
             )}
           </button>
+
+          <div className="h-4 w-px bg-royal-gold/20" />
+
+          {/* ===== 👤 User Profile Dropdown ===== */}
+          <DropdownMenuInNav onClick={logout} />
         </div>
       </div>
     </header>

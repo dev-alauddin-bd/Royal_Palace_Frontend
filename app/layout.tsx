@@ -5,6 +5,7 @@ import { ThemeProvider } from 'next-themes';
 import ReduxProvider from './reduxProvider';
 import SmoothScroll from '@/components/SmoothScroll';
 
+
 const notoSerif = Noto_Serif({
   variable: '--font-noto-serif',
   subsets: ['latin'],
@@ -38,6 +39,10 @@ export default function RootLayout({
             <SmoothScroll>
               {children}
             </SmoothScroll>
+            <SmoothScroll>
+              {children}
+            </SmoothScroll>
+
           </ReduxProvider>
         </ThemeProvider>
       </body>

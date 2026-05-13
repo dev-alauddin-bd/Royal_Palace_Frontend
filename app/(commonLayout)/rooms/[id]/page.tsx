@@ -1,5 +1,6 @@
 import { Bed, Crown, Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import RoomImageGallery from '@/components/sections/roomDetailsPage/room-details-top-section';
 import DateRangeCalendar from '@/components/sections/roomDetailsPage/date-range-calendar-section';
 import RoomReviewsSection from '@/components/sections/roomDetailsPage/room-reviews-section';
@@ -146,33 +147,50 @@ export default async function RoomDetailsPage({params}: {params: Promise<{ id: s
             </div>
             {/* Simple related rooms logic - can be expanded to fetch real related data */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                  <div className="absolute bottom-6 left-6 right-6 z-20">
-                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Luxury</p>
-                     <h4 className="text-white font-serif text-xl mb-4">Presidential Suite</h4>
-                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
-                  </div>
-               </div>
-               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                  <div className="absolute bottom-6 left-6 right-6 z-20">
-                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Executive</p>
-                     <h4 className="text-white font-serif text-xl mb-4">Panoramic Deluxe</h4>
-                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
-                  </div>
-               </div>
-               <div className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                  <div className="absolute bottom-6 left-6 right-6 z-20">
-                     <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">Family</p>
-                     <h4 className="text-white font-serif text-xl mb-4">Royal Penthouse</h4>
-                     <Link href="/rooms" className="text-white/60 text-[9px] font-bold uppercase tracking-widest hover:text-royal-gold transition-colors">Explore Suite</Link>
-                  </div>
-               </div>
+               {/* Fetch related rooms on the client or server side. For simplicity here, we'll assume we have a few rooms from the same category */}
+               {(() => {
+                 // We would ideally fetch these. For now, let's use the room data we have or similar.
+                 // In a real app, you'd do: const related = await fetch(`${BASE_URL}/api/rooms?type=${room.data.type}&limit=3`)
+                 return null;
+               })()}
+               {/* I will add a dynamic fetch call in the server component above to get these */}
+               <RelatedRoomsSection currentRoomId={id as string} type={room?.data?.type} />
             </div>
           </div>
         </div>
       </div>
+  );
+}
+
+// Internal component for related rooms to keep things clean
+async function RelatedRoomsSection({ currentRoomId, type }: { currentRoomId: string, type: string }) {
+  let relatedRooms = [];
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/rooms?type=${type}&limit=4`,
+      { cache: 'no-store' }
+    );
+    const data = await response.json();
+    relatedRooms = data?.data?.data?.filter((r: any) => r._id !== currentRoomId).slice(0, 3) || [];
+  } catch (err) {
+    console.error("Related rooms fetch error:", err);
+  }
+
+  if (relatedRooms.length === 0) return <div className="text-white/20 uppercase tracking-widest text-[10px]">Discovering more suites...</div>;
+
+  return (
+    <>
+      {relatedRooms.map((r: any) => (
+        <Link key={r._id} href={`/rooms/${r._id}`} className="group relative h-[300px] overflow-hidden bg-royal-obsidian/20 border border-royal-gold/5">
+          <Image src={r.images?.[0] || '/placeholder.svg'} fill className="object-cover transition-transform duration-700 group-hover:scale-110" alt={r.title} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+          <div className="absolute bottom-6 left-6 right-6 z-20">
+             <p className="text-royal-gold text-[8px] font-bold uppercase tracking-[0.3em] mb-2">{r.type}</p>
+             <h4 className="text-white font-serif text-xl mb-4">{r.title}</h4>
+             <span className="text-white/60 text-[9px] font-bold uppercase tracking-widest group-hover:text-royal-gold transition-colors">Explore Suite</span>
+          </div>
+        </Link>
+      ))}
+    </>
   );
 }
