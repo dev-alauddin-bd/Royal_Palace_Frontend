@@ -1,162 +1,116 @@
-// ====================================================
-// 🧾 Receptionist Dashboard Component
-// ====================================================
+"use client"
+import React from "react"
+import { Badge } from "@/components/ui/badge"
+import {
+  Calendar,
+  Users,
+  Bed,
+  Clock,
+  Crown,
+} from "lucide-react"
 
-'use client';
-
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Calendar, Users, Bed } from 'lucide-react';
-import { Cell, Tooltip, Legend, BarChart, XAxis, YAxis, Bar } from 'recharts';
-import { useGetDashboardDataQuery } from '@/redux/features/dashboard/dashboardApi';
-import { IBooking } from '@/types/booking.interface';
-import Loader from '@/components/shared/Loader';
-
-// ===== 🔹 Interface for Stat Card Data =====
-interface IStatCardData {
-  title: string;
-  value: number | string;
-  change: string;
-  color: string;
-  icon: keyof typeof iconMap;
-}
-
-// ===== 🔹 Icon Mapping for Stat Cards =====
-const iconMap = {
-  Calendar: <Calendar className="h-6 w-6" />,
-  Users: <Users className="h-6 w-6" />,
-  Bed: <Bed className="h-6 w-6" />,
-};
-
-// ===== 🔹 Colors for Bar Chart =====
-const COLORS = ['#8884d8', '#82ca9d', '#ffc658'];
+import { useGetDashboardDataQuery } from "@/redux/features/dashboard/dashboardApi"
+import { IBooking } from "@/types/booking.interface"
+import Loader from "@/components/shared/Loader"
+import DashboardStatCard from "@/components/dashboard/DashboardStatCard"
+import DashboardChart from "@/components/dashboard/DashboardChart"
+import DashboardTable from "@/components/dashboard/DashboardTable"
+import DashboardSectionHeader from "@/components/dashboard/DashboardSectionHeader"
 
 function ReceptionistDashboard() {
-  // ===== 🔹 Fetch dashboard data using RTK Query =====
-  const { data: dashboardData, isLoading } = useGetDashboardDataQuery(
-    undefined,
-    {
-      refetchOnMountOrArgChange: true,
-    },
-  );
+  const { data: dashboardData, isLoading } = useGetDashboardDataQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  })
 
-  // ===== 🔹 Loading state UI =====
   if (isLoading) {
-    return <Loader />;
+    return <Loader />
   }
 
-  // ===== 🔹 Extract stats and bookings data =====
-  const stats = dashboardData?.stats ?? [];
-  const bookings = dashboardData?.bookings ?? [];
+  const { 
+    stats = [], 
+    recentBookings = [] 
+  } = dashboardData || {}
 
-  // ===== 🔹 Calculate booking status counts for the chart =====
+  // Calculate booking status counts for a chart
   const statusCount: Record<string, number> = {};
-  bookings.forEach((booking: IBooking) => {
+  recentBookings.forEach((booking: IBooking) => {
     const status = booking.bookingStatus || 'unknown';
     statusCount[status] = (statusCount[status] || 0) + 1;
   });
 
-  // ===== 🔹 Prepare data for Bar Chart =====
-  const pieChartData = Object.entries(statusCount).map(([name, value]) => ({
-    name,
+  const chartData = Object.entries(statusCount).map(([name, value]) => ({
+    name: name.toUpperCase(),
     value,
   }));
 
-  return (
-    <div className="space-y-8 px-4 py-6">
-      {/* ===== 🔹 Dashboard Title ===== */}
-      <div>
-        <h2 className="text-3xl font-bold text-foreground mb-1">
-          Receptionist Dashboard
-        </h2>
-      </div>
+  const iconMap: any = {
+    Calendar: Calendar,
+    Users: Users,
+    Bed: Bed,
+  };
 
-      {/* ===== 🔹 Stat Cards Grid ===== */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {stats.map((stat: IStatCardData, index: number) => (
-          <Card key={index} className="bg-main backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-foreground">
-                {stat.title}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <div className="text-2xl font-bold text-foreground">
-                  {stat.value}
-                </div>
-                <p className={`text-xs ${stat.color}`}>
-                  {stat.change} from yesterday
-                </p>
-              </div>
-              <div className="text-foreground">{iconMap[stat.icon]}</div>
-            </CardContent>
-          </Card>
+  return (
+    <div className="p-4 md:p-8 space-y-10 animate-in fade-in duration-700">
+      <DashboardSectionHeader 
+        title="Reception Desk"
+        subtitle="Ensure every guest experiences the royal treatment from check-in to check-out."
+        icon={Crown}
+        badge="Service Excellence"
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {stats.map((stat: any, i: number) => (
+          <DashboardStatCard 
+            key={i}
+            label={stat.title} 
+            value={stat.value} 
+            subValue={`${stat.change} vs yesterday`} 
+            icon={iconMap[stat.icon] || Users} 
+          />
         ))}
       </div>
 
-      {/* ===== 🔹 Booking Status Bar Chart ===== */}
-      <Card className="bg-main backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-foreground">
-            Booking Status Overview
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="overflow-x-auto">
-          <div className="w-full">
-            <BarChart width={400} height={250} data={pieChartData}>
-              <XAxis dataKey="name" stroke="#ffffff" />
-              <YAxis stroke="#ffffff" />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value">
-                {pieChartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
+        <DashboardTable 
+          title="Recent Arrivals"
+          description="Latest guest stay requests"
+          icon={Clock}
+          headers={['Guest', 'Suite', 'Investment', 'Status']}
+          viewAllLink="/dashboard/receptionist/bookings"
+        >
+          {recentBookings.slice(0, 5).map((booking: IBooking) => (
+            <tr key={booking._id} className="hover:bg-white/5 transition-all group">
+              <td className="px-8 py-6">
+                <div>
+                  <p className="text-sm font-medium text-white group-hover:text-royal-gold transition-colors">{booking.userId?.name || 'Walk-in Guest'}</p>
+                  <p className="text-[10px] text-white/40 uppercase tracking-widest">{booking.userId?.email || 'N/A'}</p>
+                </div>
+              </td>
+              <td className="px-8 py-6 text-white/60 text-sm font-light">
+                {booking.rooms?.[0]?.roomId?.title || 'Heritage Suite'}
+              </td>
+              <td className="px-8 py-6 text-sm font-serif text-white">${booking.totalAmount}</td>
+              <td className="px-8 py-6">
+                <Badge variant="outline" className="text-[8px] uppercase tracking-widest rounded-none border-royal-gold/30 text-royal-gold">
+                  {booking.bookingStatus}
+                </Badge>
+              </td>
+            </tr>
+          ))}
+        </DashboardTable>
 
-      {/* ===== 🔹 Recent Bookings Table ===== */}
-      <Card className="bg-main backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="text-foreground">Recent Bookings</CardTitle>
-        </CardHeader>
-        <CardContent className="overflow-x-auto">
-          <table className="min-w-full text-sm text-left text-foreground">
-            <thead>
-              <tr className="border-b border-slate-600">
-                <th className="py-2">Guest</th>
-                <th>Room</th>
-                <th>Amount</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings.map((booking: IBooking) => (
-                <tr key={booking._id} className="border-b">
-                  <td className="py-2">{booking.userId?.name || 'N/A'}</td>
-                  <td>{booking.rooms?.[0]?.roomId?.title || 'N/A'}</td>
-                  <td>${booking.totalAmount}</td>
-                  <td>
-                    <Badge className="capitalize">
-                      {booking.bookingStatus}
-                    </Badge>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </CardContent>
-      </Card>
+        <DashboardChart 
+          title="Booking Overview"
+          description="Status distribution of recent bookings"
+          icon={Calendar}
+          data={chartData}
+          type="bar"
+          dataKey="value"
+          xAxisKey="name"
+        />
+      </div>
     </div>
-  );
+  )
 }
 
-export default ReceptionistDashboard;
+export default ReceptionistDashboard
