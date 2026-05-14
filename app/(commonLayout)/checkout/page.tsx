@@ -138,13 +138,13 @@ function CheckoutForm() {
 
     const bookingRes = await bookingInitiate(bookingData).unwrap();
 
-    if (!bookingRes?.paymentUrl) {
+    if (!bookingRes?.data?.paymentUrl) {
       throw new Error("Payment initialization failed");
     }
 
 
     // ================== 3️⃣ Redirect to SSLCommerz ==================
-    window.location.href = bookingRes.paymentUrl;
+    window.location.href = bookingRes.data.paymentUrl;
 
   } catch (err: any) {
     console.error("handleSubmit error:", err);

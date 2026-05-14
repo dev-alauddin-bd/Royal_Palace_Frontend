@@ -39,9 +39,6 @@ export default function RootLayout({
             <SmoothScroll>
               {children}
             </SmoothScroll>
-            <SmoothScroll>
-              {children}
-            </SmoothScroll>
 
           </ReduxProvider>
         </ThemeProvider>
