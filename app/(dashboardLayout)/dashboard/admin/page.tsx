@@ -11,6 +11,7 @@ import {
   Crown,
   Sparkles,
   ShieldCheck,
+  ArrowUpRight,
 } from "lucide-react"
 
 import { useGetDashboardDataQuery } from "@/redux/features/dashboard/dashboardApi"
@@ -20,9 +21,10 @@ import DashboardStatCard from "@/components/dashboard/DashboardStatCard"
 import DashboardChart from "@/components/dashboard/DashboardChart"
 import DashboardTable from "@/components/dashboard/DashboardTable"
 import DashboardSectionHeader from "@/components/dashboard/DashboardSectionHeader"
+import { motion } from "framer-motion"
 
 function AdminDashboard() {
-  const { data: dashboardData, isLoading } = useGetDashboardDataQuery(undefined, {
+  const { data: dashboardData, isLoading } = useGetDashboardDataQuery('admin', {
     refetchOnMountOrArgChange: true,
   })
 
@@ -92,21 +94,21 @@ function AdminDashboard() {
   }));
 
   return (
-    <div className="p-4 md:p-8 space-y-10 animate-in fade-in duration-700">
+    <div className="p-4 md:p-8 space-y-10">
       <DashboardSectionHeader 
-        title="Sovereign Overview"
-        subtitle="Welcome back, Administrator. Here is the current state of your exquisite domain."
+        title="Admin Dashboard"
+        subtitle="Strategic overview of the palace collection performance."
         icon={Crown}
         rightElement={
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-6 md:gap-10">
             <div className="text-right">
-              <p className="text-[9px] uppercase tracking-widest text-royal-gold font-bold">Occupancy</p>
-              <p className="text-2xl font-serif text-white">{stats.occupancyRate}</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-royal-gold font-bold mb-1">Occupancy</p>
+              <p className="text-2xl font-[var(--font-cinzel)] text-foreground">{stats.occupancyRate}</p>
             </div>
-            <div className="h-12 w-[1px] bg-white/10" />
+            <div className="h-10 w-[1px] bg-royal-gold/20" />
             <div className="text-right">
-              <p className="text-[9px] uppercase tracking-widest text-royal-gold font-bold">Today's Revenue</p>
-              <p className="text-2xl font-serif text-white">${stats.todaysRevenue.toLocaleString()}</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-royal-gold font-bold mb-1">Today's Revenue</p>
+              <p className="text-2xl font-[var(--font-cinzel)] text-foreground">${stats.todaysRevenue.toLocaleString()}</p>
             </div>
           </div>
         }
@@ -114,65 +116,73 @@ function AdminDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <DashboardStatCard 
-          label="Total Heritage" 
+          label="Total Bookings" 
           value={stats.totalBookings} 
           subValue={`${stats.monthlyBookings} this month`} 
           icon={Calendar} 
+          trend={{ value: "12%", isUp: true }}
         />
         <DashboardStatCard 
-          label="Total Wealth" 
+          label="Total Revenue" 
           value={`$${stats.totalRevenue.toLocaleString()}`} 
           subValue={`$${stats.monthlyRevenue.toLocaleString()} this month`} 
           icon={DollarSign} 
         />
         <DashboardStatCard 
-          label="Guest Value" 
+          label="Avg Booking Value" 
           value={`$${stats.avgBookingValue}`} 
-          subValue="Average per stay" 
+          subValue="Per guest stay" 
           icon={TrendingUp} 
         />
         <DashboardStatCard 
-          label="New Allegiances" 
+          label="New Guests" 
           value={stats.newCustomers} 
-          subValue="Loyal members growing" 
+          subValue="Loyal community growing" 
           icon={Users} 
         />
       </div>
 
-      <Card className="glass-panel border-royal-gold/20 bg-royal-gold/5 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-4">
-          <Sparkles className={`w-5 h-5 text-royal-gold ${isAiLoading ? "animate-spin" : "animate-pulse"}`} />
-        </div>
-        <CardHeader>
-          <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
-            <ShieldCheck className="h-5 w-5 text-royal-gold" />
-            Sovereign AI Insights
-          </CardTitle>
-          <CardDescription className="text-royal-gold/60 text-[10px] uppercase tracking-widest font-bold">Intelligent registry analysis</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="text-sm text-white/80 leading-relaxed font-light italic min-h-[60px]">
-              {isAiLoading && !aiInsight ? (
-                <span className="animate-pulse">Synchronizing with the divine logic...</span>
-              ) : (
-                <>"{aiInsight}"</>
-              )}
-            </div>
-            <div className="flex gap-4">
-              <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[8px] uppercase tracking-tighter">Growth Opportunity</Badge>
-              <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[8px] uppercase tracking-tighter">High Retention</Badge>
-            </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <Card className="glass-panel border-royal-gold/20 bg-royal-gold/5 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-6">
+            <Sparkles className={`w-5 h-5 text-royal-gold ${isAiLoading ? "animate-spin" : "animate-pulse"}`} />
           </div>
-        </CardContent>
-        <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-royal-gold/5 blur-3xl rounded-full" />
-      </Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-[var(--font-cinzel)] text-foreground flex items-center gap-3">
+              <ShieldCheck className="h-5 w-5 text-royal-gold" />
+              Sovereign AI Insights
+            </CardTitle>
+            <CardDescription className="text-accent-foreground text-[10px] uppercase tracking-[0.2em] font-bold mt-1">Intelligent registry analysis</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="text-sm text-foreground/80 leading-relaxed font-medium italic min-h-[60px]">
+                {isAiLoading && !aiInsight ? (
+                  <span className="animate-pulse">Consulting the royal archives...</span>
+                ) : (
+                  <>"{aiInsight}"</>
+                )}
+              </div>
+              <div className="flex gap-3">
+                <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[9px] uppercase tracking-widest px-3 py-1 bg-royal-gold/5">Growth Potential</Badge>
+                <Badge variant="outline" className="border-royal-gold/20 text-royal-gold text-[9px] uppercase tracking-widest px-3 py-1 bg-royal-gold/5">Guest Loyalty</Badge>
+              </div>
+            </div>
+          </CardContent>
+          {/* Background Decorative Gradient */}
+          <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-royal-gold/10 blur-3xl rounded-full -z-10" />
+        </Card>
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 h-full">
           <DashboardChart 
-            title="Wealth Projection"
-            description="Revenue breakdown by lunar period"
+            title="Revenue Analytics"
+            description="Wealth breakdown by lunar cycle"
             icon={TrendingUp}
             data={revenueData}
             type="area"
@@ -186,63 +196,56 @@ function AdminDashboard() {
           title="Elite Patrons"
           description="Most distinguished guests"
           icon={Crown}
-          headers={['Patron', 'Bookings', 'Spent']}
+          headers={['Patron', 'Spent']}
         >
           {topCustomers.slice(0, 5).map((customer: any, i: number) => (
-            <tr key={i} className="hover:bg-white/5 transition-all group">
-              <td className="px-8 py-6">
+            <tr key={i} className="hover:bg-royal-gold/5 transition-all group border-b border-royal-gold/5 last:border-0">
+              <td className="px-8 py-5">
                 <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 border border-royal-gold/20 flex items-center justify-center text-royal-gold font-serif text-sm group-hover:border-royal-gold transition-colors">
+                  <div className="h-10 w-10 bg-royal-gold/10 border border-royal-gold/20 flex items-center justify-center text-royal-gold font-[var(--font-cinzel)] text-sm group-hover:bg-royal-gold/20 transition-colors">
                     {i + 1}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-white group-hover:text-royal-gold transition-colors">{customer.name}</p>
-                    <p className="text-[10px] text-white/40 uppercase tracking-widest font-light">{customer.email}</p>
+                    <p className="text-sm font-bold text-foreground group-hover:text-royal-gold transition-colors">{customer.name}</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">{customer.email}</p>
                   </div>
                 </div>
               </td>
-              <td className="px-8 py-6 text-white/60 text-sm font-light">{customer.bookings}</td>
-              <td className="px-8 py-6 text-sm font-serif text-white">${customer.totalSpent.toLocaleString()}</td>
+              <td className="px-8 py-5 text-sm font-[var(--font-cinzel)] font-bold text-foreground">${customer.totalSpent.toLocaleString()}</td>
             </tr>
           ))}
         </DashboardTable>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
-        <DashboardTable 
-          title="Recent Registry"
-          description="Latest stay requests"
-          icon={Clock}
-          headers={['Guest', 'Status', 'Investment']}
-          viewAllLink="/dashboard/admin/bookings"
-        >
-          {recentBookings.slice(0, 5).map((booking: IBooking) => (
-            <tr key={booking._id} className="hover:bg-white/5 transition-all group">
-              <td className="px-8 py-6">
-                <div>
-                  <p className="text-sm font-medium text-white group-hover:text-royal-gold transition-colors">{booking.userId?.name}</p>
-                  <p className="text-[10px] text-white/40 uppercase tracking-widest">{booking.userId?.email}</p>
-                </div>
-              </td>
-              <td className="px-8 py-6">
-                <Badge variant="outline" className="text-[8px] uppercase tracking-widest rounded-none border-royal-gold/30 text-royal-gold">
-                  {booking.bookingStatus}
-                </Badge>
-              </td>
-              <td className="px-8 py-6 text-sm font-serif text-white">${booking.totalAmount}</td>
-            </tr>
-          ))}
-        </DashboardTable>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10">
+        <div className="lg:col-span-2">
+           <DashboardChart 
+            title="Stay Metrics"
+            description="Booking volume across period cycles"
+            icon={Calendar}
+            data={bookingData}
+            type="bar"
+            dataKey="bookings"
+            xAxisKey="name"
+          />
+        </div>
 
-        <DashboardChart 
-          title="Heritage Metrics"
-          description="Operational performance"
-          icon={TrendingUp}
-          data={bookingData}
-          type="bar"
-          dataKey="bookings"
-          xAxisKey="name"
-        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5 }}
+          className="glass-panel p-8 border-royal-gold/10 flex flex-col items-center justify-center text-center space-y-6 bg-royal-gold/5"
+        >
+          <div className="h-16 w-16 bg-royal-gold/10 border border-royal-gold/20 flex items-center justify-center rounded-full">
+            <Sparkles className="h-6 w-6 text-royal-gold" />
+          </div>
+          <div>
+            <h4 className="font-[var(--font-cinzel)] font-bold text-foreground">Operational Excellence</h4>
+            <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+              Day-to-day operations are being managed by the Royal Concierge. Focus on the sovereign growth and patron registry.
+            </p>
+          </div>
+        </motion.div>
       </div>
     </div>
   )

@@ -9,8 +9,8 @@ const dashboardApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // ===== ✅ GET: Fetch admin dashboard analytics =====
     getDashboardData: build.query({
-      query: () => ({
-        url: '/dashboards',
+      query: (role: string) => ({
+        url: `/dashboards/${role}`,
         method: 'GET',
       }),
       providesTags: ['Dashboard'],

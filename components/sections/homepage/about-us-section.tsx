@@ -17,7 +17,7 @@ const AboutUsSection = () => {
           className="mb-24"
         >
           <div className="flex items-center justify-center mb-10">
-            <div className="h-px bg-royal-gold/20 w-32 mr-8" />
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 mr-8" />
             <div className="flex items-center">
               <Crown className="w-5 h-5 text-royal-gold mr-4" />
               <h2 className="royal-label">
@@ -25,7 +25,7 @@ const AboutUsSection = () => {
               </h2>
               <Crown className="w-5 h-5 text-royal-gold ml-4" />
             </div>
-            <div className="h-px bg-royal-gold/20 w-32 ml-8" />
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 ml-8" />
           </div>
 
           <motion.h1
@@ -35,8 +35,7 @@ const AboutUsSection = () => {
             viewport={{ once: true }}
             className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-5xl mx-auto text-foreground"
           >
-            Where Royal Heritage Meets <br />
-            <span className="text-royal-gold italic">Modern Luxury & Elegance</span>
+            Where Royal Heritage Meets <span className="text-royal-gold italic">Modern Luxury & Elegance</span>
           </motion.h1>
         </motion.div>
 

@@ -28,17 +28,26 @@ export function Header() {
     { name: 'Cart', href: '/cart' },
   ];
 
-  const authNavigation = user ? [...navigation, { name: 'Dashboard', href: '/dashboard/user' }] : navigation;
-
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
+
+  const dashboardPath = user?.role === 'admin' 
+    ? '/dashboard/admin' 
+    : user?.role === 'receptionist' 
+      ? '/dashboard/receptionist' 
+      : '/dashboard/user';
+
+  const authNavigation = user 
+    ? [...navigation, { name: 'Dashboard', href: dashboardPath }] 
+    : navigation;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-royal-gold/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
         <div className="flex h-20 items-center justify-between">
-          <div className="flex items-center gap-2">
+          {/* Logo Section */}
+          <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3 group">
               <Crown className="h-7 w-7 text-royal-gold transition-transform group-hover:rotate-12" />
               <div className="flex flex-col">
@@ -48,6 +57,7 @@ export function Header() {
             </Link>
           </div>
 
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-10 text-[11px] font-bold uppercase tracking-[0.25em]">
             {authNavigation.map((item) => (
               <Link
@@ -63,6 +73,7 @@ export function Header() {
             ))}
           </nav>
 
+          {/* Action Buttons */}
           <div className="flex items-center space-x-6">
             <div className="hidden md:flex items-center space-x-6">
               {user ? (
@@ -107,6 +118,7 @@ export function Header() {
 
             <DropdownMenuInNav onClick={logout} />
 
+            {/* Mobile Menu Toggle */}
             <button
               className="lg:hidden text-royal-gold"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -119,6 +131,7 @@ export function Header() {
         </div>
       </div>
 
+      {/* Mobile Navigation */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div

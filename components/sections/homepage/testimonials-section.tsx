@@ -76,7 +76,7 @@ const TestimonialsSection = () => {
       initial="hidden"
       animate="visible"
       exit="exit"
-      className="relative min-h-screen"
+      className="relative min-h-screen bg-royal-obsidian"
     >
       {/* Background Image Overlay */}
       <div className="absolute h-[70vh] inset-0">
@@ -103,7 +103,7 @@ const TestimonialsSection = () => {
           >
             {/* Title Decoration */}
             <div className="flex items-center justify-center mb-8">
-              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 mr-6"></div>
+              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-12 md:w-32 mr-6"></div>
               <div className="flex items-center">
                 <MessageCircle className="w-6 h-6 text-royal-gold mr-3" />
                 <h2 className="text-royal-gold text-sm font-medium tracking-[0.2em] uppercase">
@@ -111,13 +111,12 @@ const TestimonialsSection = () => {
                 </h2>
                 <MessageCircle className="w-6 h-6 text-royal-gold ml-3" />
               </div>
-              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 ml-6"></div>
+              <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-12 md:w-32 ml-6"></div>
             </div>
 
             {/* Main Heading */}
-          <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-4xl mx-auto text-white">
-            Hear from our <br />
-            <span className="text-royal-gold italic">Valued Guests</span>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-5xl mx-auto text-white">
+            Hear from our <span className="text-royal-gold italic">Valued Guests</span>
           </h1>
         </motion.div>
         {/* Testimonials Cards with slide animation */}

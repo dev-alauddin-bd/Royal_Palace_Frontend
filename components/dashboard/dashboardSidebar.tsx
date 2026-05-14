@@ -41,10 +41,7 @@ const adminMenuItems = [
   { title: 'Manage Users', url: '/dashboard/admin/users', icon: Users },
   { title: 'Manage Rooms', url: '/dashboard/admin/rooms', icon: Bed },
   { title: 'Manage Team', url: '/dashboard/admin/teams', icon: Building },
-  { title: 'Manage Bookings', url: '/dashboard/admin/bookings', icon: Calendar },
-  { title: 'Manage Payments', url: '/dashboard/admin/payments', icon: CreditCard },
   { title: 'Reports', url: '/dashboard/admin/reports', icon: BarChart3 },
-  { title: 'Settings', url: '/dashboard/admin/settings', icon: Settings },
 ];
 
 const receptionistMenuItems = [
@@ -71,7 +68,6 @@ const guestMenuItems = [
   { title: 'Overview', url: '/dashboard/user', icon: Crown },
   { title: 'My Bookings', url: '/dashboard/user/bookings', icon: Bed },
   { title: 'Payments', url: '/dashboard/user/payments', icon: CreditCard },
-  { title: 'Settings', url: '/dashboard/user/settings', icon: Settings },
 ];
 
 export function AppSidebar() {

@@ -26,7 +26,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-[70vh] w-full overflow-hidden">
+    <section className="relative h-[75vh] min-h-[550px] w-full overflow-hidden">
       {/* 🌄 Background image */}
       <Image
         src="/images/Hero-Banner.webp"
@@ -35,7 +35,7 @@ const HeroSection = () => {
         className="object-cover z-0"
         priority
       />
-      <div className="absolute inset-0 bg-black/60 z-10" />
+      <div className="absolute inset-0 bg-black/50 z-10" />
 
       {/* 📦 Content Center */}
       <div className="relative z-20 flex flex-col justify-center items-center h-full px-4 text-center">
@@ -43,19 +43,20 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: -40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-white font-serif font-bold text-5xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] mb-8"
+          className="text-white font-[var(--font-cinzel)] font-bold text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.1] mb-6 tracking-tight"
         >
-          Discover the <br />
-          <span className="text-royal-gold italic">Perfect Room</span>
+          Experience the Finest <br />
+          <span className="text-royal-gold italic">Royal Hospitality</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.3 }}
-          className="text-white/70 text-sm sm:text-base md:text-lg max-w-2xl mb-16 font-medium tracking-[0.4em] uppercase"
+          className="text-white/90 text-xs sm:text-sm md:text-base max-w-2xl mb-10 font-medium tracking-[0.2em] uppercase"
         >
-          Elegance, Comfort, and Sovereignty
+          Discover why thousands choose us for their perfect getaway. <br className="hidden md:block" />
+          Your comfort is our greatest legacy.
         </motion.p>
 
         {/* 📅 Booking Form */}
@@ -67,15 +68,15 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="glass-panel p-10 rounded-none border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 w-full max-w-7xl text-white relative"
+          className="glass-panel p-6 rounded-none border-white/10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-6xl text-white relative"
         >
           {/* Decorative Corner */}
-          <div className="absolute -top-1 -left-1 w-8 h-8 border-t-2 border-l-2 border-royal-gold"></div>
-          <div className="absolute -bottom-1 -right-1 w-8 h-8 border-b-2 border-r-2 border-royal-gold"></div>
+          <div className="absolute -top-1 -left-1 w-6 h-6 border-t-2 border-l-2 border-royal-gold"></div>
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 border-b-2 border-r-2 border-royal-gold"></div>
 
           {/* Check-in */}
           <div className="flex flex-col items-start">
-            <label htmlFor="checkIn" className="royal-label mb-3">
+            <label htmlFor="checkIn" className="royal-label mb-2">
               Check-in
             </label>
             <input
@@ -83,14 +84,14 @@ const HeroSection = () => {
               id="checkIn"
               value={checkIn}
               onChange={(e) => setCheckIn(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 p-4 text-xs text-white placeholder:text-white/40 focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
+              className="w-full h-11 bg-white/5 border border-white/10 px-4 text-xs text-white placeholder:text-white/40 focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
               required
             />
           </div>
 
           {/* Check-out */}
           <div className="flex flex-col items-start">
-            <label htmlFor="checkOut" className="royal-label mb-3">
+            <label htmlFor="checkOut" className="royal-label mb-2">
               Check-out
             </label>
             <input
@@ -98,19 +99,19 @@ const HeroSection = () => {
               id="checkOut"
               value={checkOut}
               onChange={(e) => setCheckOut(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 p-4 text-xs text-white focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
+              className="w-full h-11 bg-white/5 border border-white/10 px-4 text-xs text-white focus:border-royal-gold transition-colors outline-none rounded-none uppercase tracking-widest"
               required
             />
           </div>
 
           {/* Adults */}
           <div className="flex flex-col items-start">
-            <label className="royal-label mb-3">Adults</label>
-            <div className="flex items-center w-full bg-white/5 border border-white/10 h-12">
+            <label className="royal-label mb-2">Adults</label>
+            <div className="flex items-center w-full bg-white/5 border border-white/10 h-11">
               <button
                 type="button"
                 onClick={() => setAdults(Math.max(1, adults - 1))}
-                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
+                className="w-11 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
               >
                 -
               </button>
@@ -120,7 +121,7 @@ const HeroSection = () => {
               <button
                 type="button"
                 onClick={() => setAdults(Math.min(10, adults + 1))}
-                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
+                className="w-11 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
               >
                 +
               </button>
@@ -129,12 +130,12 @@ const HeroSection = () => {
 
           {/* Children */}
           <div className="flex flex-col items-start">
-            <label className="royal-label mb-3">Children</label>
-            <div className="flex items-center w-full bg-white/5 border border-white/10 h-12">
+            <label className="royal-label mb-2">Children</label>
+            <div className="flex items-center w-full bg-white/5 border border-white/10 h-11">
               <button
                 type="button"
                 onClick={() => setChildren(Math.max(0, children - 1))}
-                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
+                className="w-11 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-r border-white/10"
               >
                 -
               </button>
@@ -144,7 +145,7 @@ const HeroSection = () => {
               <button
                 type="button"
                 onClick={() => setChildren(Math.min(10, children + 1))}
-                className="w-12 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
+                className="w-11 h-full flex items-center justify-center text-royal-gold hover:bg-white/5 transition-colors border-l border-white/10"
               >
                 +
               </button>
@@ -154,7 +155,7 @@ const HeroSection = () => {
           {/* Button */}
           <button
             type="submit"
-            className="sm:col-span-2 md:col-span-4 royal-button flex justify-center items-center mt-6"
+            className="sm:col-span-2 md:col-span-4 royal-button flex justify-center items-center mt-2 h-11"
           >
             <CalendarDays className="w-5 h-5 mr-3" />
             CHECK AVAILABILITY

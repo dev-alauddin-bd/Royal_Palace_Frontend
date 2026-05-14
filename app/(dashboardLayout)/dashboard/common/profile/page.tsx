@@ -1,5 +1,5 @@
 // ====================================================
-// 🧾 UserProfile Component - Editable Profile with Image Upload
+// 🧾 UserProfile Component - Imperial Guest Identity
 // ====================================================
 'use client';
 
@@ -14,6 +14,9 @@ import {
   Camera,
   Save,
   X,
+  MapPin,
+  Calendar,
+  Lock,
 } from 'lucide-react';
 
 import { selectCurrentUser, setUser } from '@/redux/features/auth/authSlice';
@@ -26,28 +29,26 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import DashboardSectionHeader from '@/components/dashboard/DashboardSectionHeader';
+import { motion, AnimatePresence } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
 
 const UserProfile = () => {
-  // ===== 🔹 Select current user info from redux store =====
   const userInfo = useSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
 
-  // ===== 🔹 Local state for editing, image upload, and edited fields =====
   const [isEditing, setIsEditing] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // RTK Query mutation for updating user info/image
   const [updateUser] = useUpdateUserMutation();
 
-  // Edited user data state
   const [editedUser, setEditedUser] = useState({
     name: userInfo?.name || '',
     phone: userInfo?.phone || '',
   });
 
-  // ===== 🔹 Clean up preview image URL on unmount or when changed =====
   useEffect(() => {
     return () => {
       if (previewImage) {
@@ -56,16 +57,14 @@ const UserProfile = () => {
     };
   }, [previewImage]);
 
-  // ===== 🔹 If no user info, show error =====
   if (!userInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1e1f25] text-red-400 text-xl">
-        User not found
+      <div className="min-h-screen flex items-center justify-center text-royal-gold text-xl font-[var(--font-cinzel)]">
+        Imperial credentials not found.
       </div>
     );
   }
 
-  // ===== 🔹 Handle profile info update =====
   const handleInfoUpdate = async () => {
     try {
       const result = await updateUser({
@@ -76,12 +75,12 @@ const UserProfile = () => {
       const { user, accessToken } = result.data;
       dispatch(setUser({ user, token: accessToken }));
       setIsEditing(false);
+      toast.success('Imperial identity updated successfully.');
     } catch (err) {
-      console.error('Error updating user info:', err);
+      toast.error('Failed to update credentials.');
     }
   };
 
-  // ===== 🔹 Handle profile image upload =====
   const handleImageUpdate = async () => {
     if (!profileImage) return;
 
@@ -99,14 +98,14 @@ const UserProfile = () => {
       dispatch(setUser({ user, token: accessToken }));
       setProfileImage(null);
       setPreviewImage(null);
+      toast.success('Royal portrait updated.');
     } catch (err) {
-      console.error('Error uploading image:', err);
+      toast.error('Failed to update portrait.');
     } finally {
       setIsUploading(false);
     }
   };
 
-  // ===== 🔹 Cancel editing and reset form to original user data =====
   const handleCancel = () => {
     setEditedUser({
       name: userInfo.name || '',
@@ -115,228 +114,210 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  // ===== 🔹 Map user role to badge style =====
-  const getRoleBadgeColor = (role: string) => {
-    switch (role) {
-      case 'admin':
-        return 'bg-red-500/20 text-red-300 border border-red-500/30';
-      case 'receptionist':
-        return 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
-      default:
-        return 'bg-main text-foreground border border-text-foreground';
-    }
-  };
-
   return (
-    <div className="min-h-screen px-4 py-6">
-      <div className="max-w-5xl mx-auto">
-        {/* ===== 🔹 Profile Title ===== */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">
-            My Profile
-          </h1>
-        </div>
+    <div className="p-4 md:p-8 space-y-8 min-h-screen">
+      <Toaster position="top-right" />
+      
+      {/* ===== Header Section ===== */}
+      <DashboardSectionHeader 
+        title="Guest Identity"
+        subtitle="Manage your personal credentials and royal preferences within the palace."
+        icon={User}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* ===== 🔹 Profile Image Section ===== */}
-          <div>
-            <Card className="bg-main border">
-              <CardContent className="p-6 flex flex-col items-center">
-                <div className="relative mb-4">
-                  <Avatar className="w-32 h-32 border-4 border-orange-500/30">
-                    <AvatarImage
-                      src={
-                        previewImage ||
-                        userInfo.image ||
-                        '/placeholder.svg?height=128&width=128'
-                      }
-                      alt={userInfo.name}
-                    />
-                    <AvatarFallback className="bg-main text-foreground text-2xl">
-                      {userInfo.name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <label htmlFor="image-upload">
-                    <Button
-                      asChild
-                      size="sm"
-                      className="absolute bottom-0 right-0 rounded-full w-9 h-9 bg-orange-500 hover:bg-orange-600"
-                      aria-label="Upload profile image"
-                    >
-                      <Camera className="w-4 h-4" />
-                    </Button>
-                  </label>
-
-                  <input
-                    id="image-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        setProfileImage(file);
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
-                    }}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ===== Left: Profile Card ===== */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-1"
+        >
+          <Card className="glass-panel border-royal-gold/10 overflow-hidden shadow-sm dark:shadow-none p-0">
+            {/* Cover Banner Effect */}
+            <div className="h-24 bg-gradient-to-r from-royal-gold/20 via-royal-gold/5 to-royal-gold/20" />
+            
+            <CardContent className="p-8 -mt-12 flex flex-col items-center">
+              {/* Avatar Area */}
+              <div className="relative mb-6">
+                <Avatar className="w-32 h-32 border-4 border-royal-gold/20 shadow-2xl rounded-none">
+                  <AvatarImage
+                    src={previewImage || userInfo.image || '/images/user-placeholder.png'}
+                    alt={userInfo.name}
+                    className="object-cover"
                   />
-                </div>
+                  <AvatarFallback className="bg-royal-gold/10 text-royal-gold text-3xl font-[var(--font-cinzel)] rounded-none">
+                    {userInfo.name?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
 
-                {/* Upload button only visible when an image is selected */}
-                {profileImage && (
-                  <Button
-                    onClick={handleImageUpdate}
-                    size="sm"
-                    disabled={isUploading}
-                    className="w-full bg-orange-500 hover:bg-orange-600 mb-2"
-                  >
-                    {isUploading ? (
-                      <span className="flex items-center gap-2">
-                        <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                        Uploading...
-                      </span>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Upload Image
-                      </>
-                    )}
-                  </Button>
-                )}
+                <label htmlFor="image-upload" className="absolute bottom-1 right-1 cursor-pointer">
+                  <div className="w-10 h-10 bg-royal-gold text-royal-blue flex items-center justify-center hover:bg-royal-gold-dark transition-all shadow-lg">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                </label>
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setProfileImage(file);
+                      setPreviewImage(URL.createObjectURL(file));
+                    }
+                  }}
+                />
+              </div>
 
-                <h2 className="text-2xl font-bold text-foreground mb-2">
+              {profileImage && (
+                <button
+                  onClick={handleImageUpdate}
+                  disabled={isUploading}
+                  className="royal-button w-full mb-6 !h-10 text-[10px]"
+                >
+                  {isUploading ? 'UPLOADING...' : 'SAVE ROYAL PORTRAIT'}
+                </button>
+              )}
+
+              <div className="text-center space-y-2 mb-8">
+                <h2 className="text-2xl font-[var(--font-cinzel)] font-bold text-foreground">
                   {userInfo.name}
                 </h2>
-
-                <Badge className={`mb-4 ${getRoleBadgeColor(userInfo.role)}`}>
-                  {userInfo.role.charAt(0).toUpperCase() +
-                    userInfo.role.slice(1)}
+                <Badge className="bg-royal-gold/10 text-royal-gold border-royal-gold/20 font-bold uppercase tracking-widest text-[9px] rounded-none px-4 py-1">
+                  {userInfo.role}
                 </Badge>
+              </div>
 
-                <div className="space-y-2 text-foreground text-sm text-center">
-                  <div className="flex items-center justify-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    {userInfo.email}
+              <div className="w-full space-y-4 pt-6 border-t border-royal-gold/5">
+                <div className="flex items-center gap-4 text-muted-foreground group">
+                  <div className="w-8 h-8 flex items-center justify-center bg-royal-gold/5 border border-royal-gold/10 group-hover:border-royal-gold/30 transition-all">
+                    <Mail className="w-3.5 h-3.5 text-royal-gold" />
                   </div>
-                  {userInfo.phone && (
-                    <div className="flex items-center justify-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      {userInfo.phone}
-                    </div>
-                  )}
+                  <span className="text-xs font-medium truncate">{userInfo.email}</span>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* ===== 🔹 Profile Info Form Section ===== */}
-          <div className="lg:col-span-2">
-            <Card className="bg-main border">
-              <CardHeader className="flex items-center justify-between">
-                <CardTitle className="text-foreground">
-                  Profile Information
-                </CardTitle>
-
-                {!isEditing ? (
-                  <Button
-                    onClick={() => setIsEditing(true)}
-                    variant="outline"
-                    size="sm"
-                    className="bg-slate-700/50 border-slate-600 text-foreground hover:bg-slate-700"
-                  >
-                    <Pencil className="w-4 h-4 mr-2" />
-                    Edit
-                  </Button>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={handleInfoUpdate}
-                      size="sm"
-                      className="bg-orange-500 hover:bg-orange-600"
-                    >
-                      <Save className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
-                    <Button
-                      onClick={handleCancel}
-                      variant="outline"
-                      size="sm"
-                      className="bg-slate-700/50 border-slate-600 text-foreground hover:bg-slate-700"
-                    >
-                      <X className="w-4 h-4 mr-2" />
-                      Cancel
-                    </Button>
+                <div className="flex items-center gap-4 text-muted-foreground group">
+                  <div className="w-8 h-8 flex items-center justify-center bg-royal-gold/5 border border-royal-gold/10 group-hover:border-royal-gold/30 transition-all">
+                    <Phone className="w-3.5 h-3.5 text-royal-gold" />
                   </div>
-                )}
-              </CardHeader>
+                  <span className="text-xs font-medium">{userInfo.phone || 'Registry incomplete'}</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-              <CardContent className="space-y-6">
-                {/* Full Name Field */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium">
-                    Full Name
-                  </Label>
+        {/* ===== Right: Detailed Information ===== */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="lg:col-span-2 space-y-8"
+        >
+          {/* Identity Form Card */}
+          <Card className="glass-panel border-royal-gold/10 shadow-sm dark:shadow-none p-0">
+            <CardHeader className="p-8 border-b border-royal-gold/10 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-xl font-[var(--font-cinzel)] font-bold text-foreground">
+                  Identity Details
+                </CardTitle>
+                <p className="text-xs text-muted-foreground mt-1 font-medium">Verified credentials in the royal registry.</p>
+              </div>
+
+              {!isEditing ? (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2 h-10 px-6 border border-royal-gold/20 text-[10px] font-bold uppercase tracking-widest text-foreground hover:bg-royal-gold/10 transition-all"
+                >
+                  <Pencil className="w-3 h-3 text-royal-gold" /> Edit Info
+                </button>
+              ) : (
+                <div className="flex gap-3">
+                   <button
+                    onClick={handleInfoUpdate}
+                    className="royal-button !h-10 px-6 text-[10px]"
+                  >
+                    SAVE CHANGES
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="h-10 px-6 border border-rose-500/20 text-[10px] font-bold uppercase tracking-widest text-rose-500 hover:bg-rose-500/5 transition-all"
+                  >
+                    CANCEL
+                  </button>
+                </div>
+              )}
+            </CardHeader>
+
+            <CardContent className="p-8 grid gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Full Name</Label>
                   {isEditing ? (
                     <Input
                       value={editedUser.name}
-                      onChange={(e) =>
-                        setEditedUser({ ...editedUser, name: e.target.value })
-                      }
-                      className="bg-slate-700/50 border-slate-600 text-foreground placeholder:text-foreground focus:border-orange-500 focus:ring-orange-500/20"
+                      onChange={(e) => setEditedUser({ ...editedUser, name: e.target.value })}
+                      className="h-12 bg-white/5 border-royal-gold/10 text-foreground rounded-none focus:border-royal-gold/50 transition-all ring-0 focus-visible:ring-0"
                     />
                   ) : (
-                    <div className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                      <User className="w-5 h-5 text-foreground" />
+                    <div className="h-12 flex items-center px-4 bg-royal-gold/5 border border-royal-gold/5 text-foreground font-medium text-sm">
                       {userInfo.name}
                     </div>
                   )}
                 </div>
 
-                {/* Phone Number Field */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium">Phone</Label>
+                <div className="space-y-3">
+                  <Label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Contact Number</Label>
                   {isEditing ? (
                     <Input
                       value={editedUser.phone}
-                      type="tel"
-                      onChange={(e) =>
-                        setEditedUser({ ...editedUser, phone: e.target.value })
-                      }
-                      placeholder="Enter phone number"
-                      className="bg-slate-700/50 border-slate-600 text-foreground placeholder:text-foreground focus:border-orange-500 focus:ring-orange-500/20"
+                      onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+                      className="h-12 bg-white/5 border-royal-gold/10 text-foreground rounded-none focus:border-royal-gold/50 transition-all ring-0 focus-visible:ring-0"
+                      placeholder="Add phone to registry..."
                     />
                   ) : (
-                    <div className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                      <Phone className="w-5 h-5 text-foreground" />
-                      {userInfo.phone || 'Not provided'}
+                    <div className="h-12 flex items-center px-4 bg-royal-gold/5 border border-royal-gold/5 text-foreground font-medium text-sm">
+                      {userInfo.phone || 'No phone registered'}
                     </div>
                   )}
                 </div>
+              </div>
 
-                {/* Role Display */}
-                <div className="space-y-2">
-                  <Label className="text-foreground font-medium">Role</Label>
-                  <div className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
-                    <Shield className="w-5 h-5 text-foreground" />
-                    <span className="capitalize text-foreground">
-                      {userInfo.role}
-                    </span>
-                    <Badge
-                      className={`ml-auto ${getRoleBadgeColor(userInfo.role)}`}
-                    >
-                      {userInfo.role === 'admin'
-                        ? 'Administrator'
-                        : userInfo.role === 'receptionist'
-                          ? 'Receptionist'
-                          : 'Guest'}
-                    </Badge>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <Label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Email Address</Label>
+                  <div className="h-12 flex items-center px-4 bg-transparent border border-dashed border-royal-gold/20 text-muted-foreground text-sm cursor-not-allowed">
+                    {userInfo.email}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+
+                <div className="space-y-3">
+                  <Label className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Access Role</Label>
+                  <div className="h-12 flex items-center px-4 bg-transparent border border-dashed border-royal-gold/20 text-muted-foreground text-sm cursor-not-allowed capitalize">
+                    {userInfo.role} Registry
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Account Security Card */}
+          <Card className="glass-panel border-royal-gold/10 shadow-sm dark:shadow-none p-0 overflow-hidden">
+             <div className="p-8 flex items-center justify-between bg-royal-gold/5">
+                <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 flex items-center justify-center bg-royal-gold/10 border border-royal-gold/20">
+                      <Shield className="w-5 h-5 text-royal-gold" />
+                   </div>
+                   <div>
+                      <h4 className="font-[var(--font-cinzel)] font-bold text-foreground">Imperial Security</h4>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Enhanced protection active</p>
+                   </div>
+                </div>
+                <button className="h-10 px-6 border border-royal-gold/20 text-[10px] font-bold uppercase tracking-widest text-royal-gold hover:bg-royal-gold/10 transition-all flex items-center gap-2">
+                   <Lock className="w-3 h-3" /> UPDATE PASSWORD
+                </button>
+             </div>
+          </Card>
+        </motion.div>
       </div>
     </div>
   );

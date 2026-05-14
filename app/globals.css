@@ -9,9 +9,9 @@
   /* === Color variables mapping === */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-serif: var(--font-noto-serif);
+  --font-sans: var(--font-outfit);
+  --font-serif: var(--font-cormorant);
+  --font-cinzel: var(--font-cinzel);
   --font-krona: var(--font-krona-one);
 
   /* === Sidebar-specific colors === */
@@ -69,46 +69,46 @@
 :root {
   --color-title: #c5a021; /* Solid Royal Gold */
   --radius: 0px;
-  --main-bg: #fdfdfb;
+  --main-bg: #fafaf9;
 
   /* === Background and foreground === */
-  --background: #ffffff;
-  --foreground: #001529;
+  --background: #fafaf9; /* Softer cream background to reduce eye strain */
+  --foreground: #020617; /* Deepest blue/black for max readability */
 
   /* === Card & Popover === */
   --card: #ffffff;
-  --card-foreground: #001529;
+  --card-foreground: #020617;
   --popover: #ffffff;
-  --popover-foreground: #001529;
+  --popover-foreground: #020617;
 
   /* === Primary & Secondary === */
   --primary: #c5a021;
   --primary-foreground: #ffffff;
-  --secondary: #001529;
-  --secondary-foreground: #c5a021;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
 
   /* === Muted, Accent, Destructive === */
-  --muted: #f8f8f6;
-  --muted-foreground: #666666;
-  --accent: #fdfdfb;
-  --accent-foreground: #c5a021;
-  --destructive: #6b0f11;
+  --muted: #f1f5f9;
+  --muted-foreground: #334155; /* Sharp contrast for muted text */
+  --accent: #f8fafc;
+  --accent-foreground: #92400e; /* Deep bronze-gold for contrast */
+  --destructive: #be123c;
 
   /* === Borders, Inputs, Rings === */
-  --border: #e8e8e3;
-  --input: #e8e8e3;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
   --ring: #c5a021;
 
   /* === Charts === */
   --chart-1: #c5a021;
-  --chart-2: #001529;
+  --chart-2: #0f172a;
 
   /* === Sidebar === */
   --sidebar: #ffffff;
-  --sidebar-foreground: #001529;
+  --sidebar-foreground: #0f172a;
   --sidebar-primary: #c5a021;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-border: #e8e8e3;
+  --sidebar-border: #cbd5e1; /* Stronger sidebar border */
 }
 
 /* === 🌚 Dark Theme Overrides === */
@@ -150,8 +150,13 @@
     @apply border-border outline-ring/50 rounded-none!;
   }
 
+  /* Improved Light Mode Shadows for better depth */
+  .card, [class*="card"] {
+    @apply shadow-sm shadow-black/[0.03] dark:shadow-none;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -183,18 +188,18 @@
   }
 
   .royal-text-gold {
-    @apply text-royal-gold;
+    @apply text-accent-foreground;
   }
 
   .royal-heading {
-    @apply font-serif font-bold tracking-tight;
+    @apply font-[var(--font-cinzel)] font-bold tracking-tight;
   }
 
   .royal-label {
-    @apply font-krona text-[10px] font-bold uppercase tracking-[0.4em] text-royal-gold;
+    @apply font-[var(--font-cinzel)] text-[10px] font-bold uppercase tracking-[0.4em] text-accent-foreground;
   }
 
   .glass-panel {
-    @apply bg-black/40 backdrop-blur-xl border border-white/10;
+    @apply bg-white/70 dark:bg-black/40 backdrop-blur-xl border border-black/5 dark:border-white/10;
   }
 }

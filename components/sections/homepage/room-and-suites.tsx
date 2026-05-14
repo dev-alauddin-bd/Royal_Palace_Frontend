@@ -10,7 +10,7 @@ import type { IRoom } from '@/types/room.interface';
 import Link from 'next/link';
 
 const RoomAndSuites = () => {
-  const { data: roomsData } = useFilterAllRoomsQuery({ limit: 6 });
+  const { data: roomsData } = useFilterAllRoomsQuery({ limit: 8 });
 
   return (
     <section className="py-24 bg-background">
@@ -25,7 +25,7 @@ const RoomAndSuites = () => {
         >
           {/* Title Decoration */}
           <div className="flex items-center justify-center mb-8">
-            <div className="h-px bg-royal-gold/20 w-32 mr-6"></div>
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 mr-6"></div>
             <div className="flex items-center">
               <Bed className="w-5 h-5 text-royal-gold mr-4" />
               <h2 className="royal-label">
@@ -33,13 +33,11 @@ const RoomAndSuites = () => {
               </h2>
               <Bed className="w-5 h-5 text-royal-gold ml-4" />
             </div>
-            <div className="h-px bg-royal-gold/20 w-32 ml-6"></div>
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 ml-6"></div>
           </div>
 
-          {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight text-center max-w-4xl mx-auto text-foreground">
-            Selection of <br />
-            <span className="text-royal-gold italic">Luxury Accommodations</span>
+          <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight text-center max-w-5xl mx-auto text-foreground">
+            Selection of <span className="text-royal-gold italic">Luxury Accommodations</span>
           </h1>
         </motion.div>
 

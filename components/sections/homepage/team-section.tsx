@@ -30,7 +30,7 @@ export default function TeamSection() {
           className="mb-20"
         >
           <div className="flex items-center justify-center mb-8">
-            <div className="h-px bg-royal-gold/20 w-32 mr-6"></div>
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 mr-6"></div>
             <div className="flex items-center">
               <Users className="w-5 h-5 text-royal-gold mr-4" />
               <h2 className="royal-label">
@@ -38,12 +38,11 @@ export default function TeamSection() {
               </h2>
               <Users className="w-5 h-5 text-royal-gold ml-4" />
             </div>
-            <div className="h-px bg-royal-gold/20 w-32 ml-6"></div>
+            <div className="h-px bg-royal-gold/20 w-12 md:w-32 ml-6"></div>
           </div>
 
-          <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-4xl mx-auto">
-            Dedicated Professionals Behind <br />
-            <span className="text-royal-gold italic">Our Royal Experience</span>
+          <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight text-center max-w-5xl mx-auto">
+            Dedicated Professionals Behind <span className="text-royal-gold italic">Our Royal Experience</span>
           </h1>
         </motion.div>
 
@@ -57,7 +56,7 @@ export default function TeamSection() {
               transition={{ duration: 0.6, delay: index * 0.15 }}
               viewport={{ once: true }}
             >
-              <Card className="group hover:shadow-2xl transition-all duration-500 border-0 bg-royal-obsidian/50 backdrop-blur-md hover:-translate-y-2 p-0 rounded-none border border-royal-gold/10">
+              <Card className="group hover:shadow-2xl transition-all duration-500 bg-royal-gold/5 backdrop-blur-md hover:-translate-y-2 p-0 rounded-none border border-royal-gold/10 shadow-sm dark:shadow-none">
                 <CardContent className="p-0">
                   {/* ==== Image & Badge ==== */}
                   <div className="relative overflow-hidden">

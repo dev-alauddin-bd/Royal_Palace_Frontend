@@ -31,7 +31,7 @@ export function FAQSection() {
                     className="mb-20"
                 >
                     <div className="flex items-center justify-center mb-8">
-                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 mr-6"></div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-12 md:w-32 mr-6"></div>
                         <div className="flex items-center">
                             <HelpCircle className="w-6 h-6 text-royal-gold mr-3" />
                             <h2 className="text-royal-gold text-base md:text-sm font-medium tracking-[0.2em] uppercase">
@@ -39,12 +39,11 @@ export function FAQSection() {
                             </h2>
                             <HelpCircle className="w-6 h-6 text-royal-gold ml-3" />
                         </div>
-                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-32 ml-6"></div>
+                        <div className="h-px bg-gradient-to-r from-transparent via-royal-gold to-transparent w-12 md:w-32 ml-6"></div>
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-serif font-medium leading-tight text-center max-w-4xl mx-auto">
-                        Find answers to common questions about <br />
-                        <span className="royal-gradient-text">Our Resort and Services</span>
+                    <h1 className="text-3xl md:text-5xl font-serif font-medium leading-tight text-center max-w-5xl mx-auto">
+                        Find answers to common questions about <span className="royal-gradient-text">Our Resort and Services</span>
                     </h1>
                 </motion.div>
 

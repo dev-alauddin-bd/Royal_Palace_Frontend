@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -18,18 +18,12 @@ import {
   useGetBookingsByUserIdQuery,
 } from '@/redux/features/booking/bookingApi';
 import { IBooking } from '@/types/booking.interface';
-import { Button } from '@/components/ui/button';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import Loader from '@/components/shared/Loader';
+import DashboardSectionHeader from '@/components/dashboard/DashboardSectionHeader';
+import { Calendar, Bed, Clock, ArrowRight, ShieldX } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-const statusColorMap: Record<string, string> = {
-  success: 'bg-emerald-600',
-  pending: 'bg-yellow-600',
-  failed: 'bg-red-600',
-  cancel: 'bg-red-600',
-  booked: 'bg-green-600',
-  initialCancel: 'bg-orange-600',
-};
 export default function UserBookings() {
   const user = useSelector(selectCurrentUser);
   const { data: bookingData, isLoading } = useGetBookingsByUserIdQuery(
@@ -38,133 +32,115 @@ export default function UserBookings() {
   const [cancelBooking] = useCancelBookingMutation();
 
   const cancelBookingHandeller = async (bookingId: string) => {
+    if (!confirm('Are you sure you wish to withdraw this royal reservation?')) return;
     try {
-      await cancelBooking(bookingId);
-      toast.success('Booking cancelled successfully');
+      await cancelBooking(bookingId).unwrap();
+      toast.success('Reservation withdrawn successfully');
     } catch (error) {
-      console.error(error);
-      toast.error('Error cancelling booking');
+      toast.error('Error withdrawing reservation');
     }
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
 
   return (
-    <div className="space-y-6">
-      {/* ===== 🔹 Page Header ===== */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold text-foreground">Booked Rooms</h1>
-      </div>
+    <div className="p-4 md:p-8 space-y-10 min-h-screen">
+      {/* ===== Header Section ===== */}
+      <DashboardSectionHeader 
+        title="My Bookings"
+        subtitle="Review your current and past stays."
+        icon={Bed}
+      />
 
-      {/* ===== 🔹 Bookings Table ===== */}
-      <Card className="bg-main border border-slate-700 shadow-md rounded-xl">
-        <CardHeader>
-          <CardTitle className="text-foreground">Recent Bookings</CardTitle>
-        </CardHeader>
-        <CardContent>
+      {/* ===== Bookings Table ===== */}
+      <Card className="glass-panel border-royal-gold/10 overflow-hidden shadow-sm dark:shadow-none p-0">
+        <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <Table>
-              <TableHeader className="bg-[#2a2d38]">
-                <TableRow>
-                  {[
-                    'Room Title',
-                    'Room Count',
-                    'Check-in',
-                    'Check-out',
-                    'Amount',
-                    'Status',
-                    'Action',
-                  ].map((header) => (
-                    <TableHead
-                      key={header}
-                      className="text-white border border-slate-700"
-                    >
-                      {header}
-                    </TableHead>
-                  ))}
+            <Table className="min-w-full border-collapse">
+              <TableHeader>
+                <TableRow className="bg-royal-gold/5 border-b border-royal-gold/10 hover:bg-royal-gold/5">
+                  <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5">Suite Details</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-center">Dates</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-right">Total</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-center">Status</TableHead>
+                  <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-right">Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {bookingData?.data.length === 0 && (
-                  <TableRow>
-                    <TableCell
-                      colSpan={7}
-                      className="text-center p-4 text-foreground border border-slate-700"
+                {(!bookingData?.data || bookingData.data.length === 0) ? (
+                   <tr>
+                     <td colSpan={5} className="p-20 text-center text-muted-foreground italic">No reservations found in your history.</td>
+                   </tr>
+                 ) : (
+                   bookingData.data.map((booking: IBooking, idx: number) => (
+                    <motion.tr
+                      key={booking._id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="border-b border-royal-gold/5 hover:bg-royal-gold/5 transition-colors group"
                     >
-                      No bookings found.
-                    </TableCell>
-                  </TableRow>
+                      <TableCell className="px-8 py-5">
+                         <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-royal-gold/10 flex items-center justify-center border border-royal-gold/20">
+                               <Bed className="w-4 h-4 text-royal-gold" />
+                            </div>
+                            <div>
+                               <p className="text-sm font-bold text-foreground group-hover:text-royal-gold transition-colors truncate max-w-[200px]">
+                                 {booking.rooms?.map((r) => r.roomId && typeof r.roomId === 'object' && 'title' in r.roomId ? r.roomId.title : 'Luxury Room').join(', ')}
+                               </p>
+                               <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium mt-1">{booking.rooms.length} Room(s)</p>
+                            </div>
+                         </div>
+                      </TableCell>
+
+                      <TableCell className="px-8 py-5 text-center">
+                         <div className="inline-flex items-center gap-2 text-xs text-foreground/80 font-medium">
+                            <span>{booking.rooms[0]?.checkInDate ? new Date(booking.rooms[0].checkInDate).toLocaleDateString() : '-'}</span>
+                            <ArrowRight className="w-3 h-3 text-royal-gold" />
+                            <span>{booking.rooms[0]?.checkOutDate ? new Date(booking.rooms[0].checkOutDate).toLocaleDateString() : '-'}</span>
+                         </div>
+                      </TableCell>
+
+                      <TableCell className="px-8 py-5 text-right font-[var(--font-cinzel)] font-bold text-foreground">
+                        ${booking.totalAmount.toFixed(2)}
+                      </TableCell>
+
+                      <TableCell className="px-8 py-5 text-center">
+                        <Badge
+                          variant="outline"
+                          className={`text-[9px] uppercase tracking-widest px-2 py-0.5 border-royal-gold/20 text-royal-gold bg-royal-gold/5 ${
+                            ['booked', 'confirmed'].includes(booking.bookingStatus.toLowerCase())
+                              ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' 
+                              : booking.bookingStatus.toLowerCase() === 'cancelled'
+                                ? 'border-rose-500/30 text-rose-500 bg-rose-500/5'
+                                : ''
+                          }`}
+                        >
+                          {booking.bookingStatus}
+                        </Badge>
+                      </TableCell>
+
+                      <TableCell className="px-8 py-5 text-right">
+                        <div className="flex justify-end gap-3">
+                          <button
+                            onClick={() => cancelBookingHandeller(booking._id)}
+                            disabled={['cancelled', 'pending', 'failed'].includes(booking.bookingStatus.toLowerCase())}
+                            className="text-[9px] font-bold uppercase tracking-widest text-red-400 hover:text-red-300 disabled:opacity-20 disabled:grayscale transition-all flex items-center gap-2"
+                          >
+                            <ShieldX className="w-3 h-3" /> Withdrawal
+                          </button>
+                        </div>
+                      </TableCell>
+                    </motion.tr>
+                  ))
                 )}
-                {bookingData?.data.map((booking: IBooking) => (
-                  <TableRow
-                    key={booking._id}
-                    className="border border-slate-700 hover:bg-slate-800/50 transition duration-200"
-                  >
-                    <TableCell className="text-foreground border border-slate-700">
-                      {booking.rooms
-                        ?.map((r) =>
-                          r.roomId && 'title' in r.roomId
-                            ? r.roomId.title
-                            : 'Untitled Room',
-                        )
-                        .join(', ')}
-                    </TableCell>
-
-                    <TableCell className="text-foreground border border-slate-700">
-                      {booking.rooms.length}
-                    </TableCell>
-
-                    <TableCell className="text-foreground border border-slate-700">
-                      {booking.rooms[0]?.checkInDate
-                        ? new Date(
-                            booking.rooms[0].checkInDate,
-                          ).toLocaleDateString()
-                        : '-'}
-                    </TableCell>
-
-                    <TableCell className="text-foreground border border-slate-700">
-                      {booking.rooms[0]?.checkOutDate
-                        ? new Date(
-                            booking.rooms[0].checkOutDate,
-                          ).toLocaleDateString()
-                        : '-'}
-                    </TableCell>
-
-                    <TableCell className="text-green-400 font-semibold border border-slate-700">
-                      ${booking.totalAmount}
-                    </TableCell>
-
-                    <TableCell className="border border-slate-700">
-                      <Badge
-                        className={`text-white capitalize ${
-                          statusColorMap[booking?.bookingStatus] ||
-                          'bg-gray-600'
-                        }`}
-                      >
-                        {booking.bookingStatus}
-                      </Badge>
-                    </TableCell>
-
-                    <TableCell className="border border-slate-700">
-                      <Button
-                        variant="outline"
-                        onClick={() => cancelBookingHandeller(booking._id)}
-                        disabled={['cancelled', 'pending', 'failed'].includes(
-                          booking.bookingStatus,
-                        )}
-                      >
-                        Cancel
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
               </TableBody>
             </Table>
           </div>
         </CardContent>
       </Card>
+      <Toaster position="top-right" />
     </div>
   );
 }

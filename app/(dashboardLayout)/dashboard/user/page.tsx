@@ -18,7 +18,7 @@ import DashboardTable from "@/components/dashboard/DashboardTable"
 import DashboardSectionHeader from "@/components/dashboard/DashboardSectionHeader"
 
 function GuestDashboard() {
-  const { data: dashboardData, isLoading } = useGetDashboardDataQuery(undefined, {
+  const { data: dashboardData, isLoading } = useGetDashboardDataQuery('guest', {
     refetchOnMountOrArgChange: true,
   })
 
@@ -40,10 +40,10 @@ function GuestDashboard() {
   };
 
   return (
-    <div className="p-4 md:p-8 space-y-10 animate-in fade-in duration-700">
+    <div className="p-4 md:p-8 space-y-10">
       <DashboardSectionHeader 
-        title="My Royal Residence"
-        subtitle="Welcome back to your exquisite domain. Review your heritage and plan your next stay."
+        title="Guest Overview"
+        subtitle="Review your current stays and plan your next visit."
         icon={Crown}
         badge="Guest Experience"
       />
@@ -60,8 +60,8 @@ function GuestDashboard() {
       </div>
 
       <DashboardChart 
-        title="Spending History"
-        description="Your investment in luxury over the past lunar periods"
+        title="Monthly Spending"
+        description="Monthly overview of your luxury stays"
         icon={DollarSign}
         data={spendingHistory}
         type="bar"
@@ -72,55 +72,65 @@ function GuestDashboard() {
 
       <div className="grid grid-cols-1 gap-8 pb-10">
         <DashboardTable 
-          title="Recent Bookings"
-          description="Your current and upcoming stay requests"
+          title="Upcoming Stays"
+          description="Your current and future reservations"
           icon={Clock}
-          headers={['Suite', 'Arrival', 'Departure', 'Investment', 'Status']}
+          headers={['Suite', 'Arrival', 'Departure', 'Total', 'Status']}
           viewAllLink="/dashboard/user/bookings"
         >
           {recentBookings.map((booking: IBooking) => (
-            <tr key={booking._id} className="hover:bg-white/5 transition-all group">
-              <td className="px-8 py-6 text-white font-serif font-bold">
+            <tr key={booking._id} className="hover:bg-royal-gold/5 transition-all group border-b border-royal-gold/5 last:border-0">
+              <td className="px-8 py-5 text-foreground font-[var(--font-cinzel)] font-bold">
                 {booking.rooms?.[0]?.roomId?.title || 'Heritage Suite'}
               </td>
-              <td className="px-8 py-6 text-white/60 text-sm font-light">
+              <td className="px-8 py-5 text-muted-foreground text-sm font-medium">
                 {booking.rooms?.[0]?.checkInDate ? new Date(booking.rooms[0].checkInDate).toLocaleDateString() : '-'}
               </td>
-              <td className="px-8 py-6 text-white/60 text-sm font-light">
+              <td className="px-8 py-5 text-muted-foreground text-sm font-medium">
                 {booking.rooms?.[0]?.checkOutDate ? new Date(booking.rooms[0].checkOutDate).toLocaleDateString() : '-'}
               </td>
-              <td className="px-8 py-6 text-sm font-serif text-white">${booking.totalAmount}</td>
-              <td className="px-8 py-6">
-                <Badge variant="outline" className={`text-[8px] uppercase tracking-widest rounded-none border-royal-gold/30 text-royal-gold`}>
+              <td className="px-8 py-5 text-sm font-[var(--font-cinzel)] font-bold text-foreground">${booking.totalAmount}</td>
+              <td className="px-8 py-5">
+                <Badge variant="outline" className={`text-[9px] uppercase tracking-widest px-2 py-0.5 border-royal-gold/20 text-royal-gold bg-royal-gold/5 ${booking.bookingStatus === 'Confirmed' ? 'border-emerald-500/20 text-emerald-600 bg-emerald-500/5' : ''}`}>
                   {booking.bookingStatus}
                 </Badge>
               </td>
             </tr>
           ))}
+          {recentBookings.length === 0 && (
+            <tr>
+              <td colSpan={5} className="px-8 py-10 text-center text-muted-foreground italic">No upcoming stay requests found.</td>
+            </tr>
+          )}
         </DashboardTable>
 
         <DashboardTable 
-          title="Past Experiences"
-          description="Chronicles of your previous visits"
+          title="Past Stays"
+          description="A history of your previous visits"
           icon={Calendar}
-          headers={['Suite', 'Check-out', 'Investment', 'Status']}
+          headers={['Suite', 'Check-out', 'Total', 'Status']}
         >
           {pastBookings.map((booking: IBooking) => (
-            <tr key={booking._id} className="hover:bg-white/5 transition-all group">
-              <td className="px-8 py-6 text-white font-serif">
+            <tr key={booking._id} className="hover:bg-royal-gold/5 transition-all group border-b border-royal-gold/5 last:border-0">
+              <td className="px-8 py-5 text-foreground font-[var(--font-cinzel)]">
                 {booking.rooms?.[0]?.roomId?.title || 'Heritage Suite'}
               </td>
-              <td className="px-8 py-6 text-white/60 text-sm font-light">
+              <td className="px-8 py-5 text-muted-foreground text-sm">
                 {booking.rooms?.[0]?.checkOutDate ? new Date(booking.rooms[0].checkOutDate).toLocaleDateString() : '-'}
               </td>
-              <td className="px-8 py-6 text-sm font-serif text-white">${booking.totalAmount}</td>
-              <td className="px-8 py-6">
-                <Badge variant="outline" className="text-[8px] uppercase tracking-widest rounded-none border-white/10 text-white/40">
+              <td className="px-8 py-5 text-sm font-[var(--font-cinzel)] text-foreground">${booking.totalAmount}</td>
+              <td className="px-8 py-5">
+                <Badge variant="outline" className="text-[9px] uppercase tracking-widest px-2 py-0.5 border-border text-muted-foreground">
                   {booking.bookingStatus}
                 </Badge>
               </td>
             </tr>
           ))}
+          {pastBookings.length === 0 && (
+            <tr>
+              <td colSpan={4} className="px-8 py-10 text-center text-muted-foreground italic">No past experiences recorded.</td>
+            </tr>
+          )}
         </DashboardTable>
       </div>
     </div>

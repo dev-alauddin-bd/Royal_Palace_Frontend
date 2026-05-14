@@ -1,8 +1,8 @@
-'use client';
+"use client"
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { CreditCard, DollarSign, TrendingUp, Clock, ArrowUpRight, Download, Calendar, ArrowRight, Receipt } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -11,102 +11,151 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useSelector } from 'react-redux';
-import { selectCurrentUser } from '@/redux/features/auth/authSlice';
-import { useGetPaymentsByUserIdQuery } from '@/redux/features/payment/paymentApi';
-import Loader from '@/components/shared/Loader';
+import DashboardSectionHeader from "@/components/dashboard/DashboardSectionHeader"
+import DashboardChart from "@/components/dashboard/DashboardChart"
+import { useGetDashboardDataQuery } from "@/redux/features/dashboard/dashboardApi"
+import { useGetPaymentsByUserIdQuery } from "@/redux/features/payment/paymentApi"
+import { useSelector } from "react-redux"
+import { selectCurrentUser } from "@/redux/features/auth/authSlice"
+import Loader from "@/components/shared/Loader"
+import { motion } from "framer-motion"
 
-const statusColorMap: Record<string, string> = {
-  completed: 'bg-emerald-600',
-  pending: 'bg-yellow-600',
-  failed: 'bg-red-600',
-  cancel: 'bg-red-600',
-  booked: 'bg-green-600',
-  claimRefund: 'bg-blue-600',
-  // Add more if needed
-};
+export default function UserPaymentsPage() {
+  const user = useSelector(selectCurrentUser)
+  const { data: dashboardData, isLoading: isDashboardLoading } = useGetDashboardDataQuery(user?._id || "")
+  const { data: paymentData, isLoading: isPaymentLoading } = useGetPaymentsByUserIdQuery(user?._id || "")
 
-export default function UserPayments() {
-  const user = useSelector(selectCurrentUser);
-  const id = user?._id;
-  const { data: paymentsData, isLoading } = useGetPaymentsByUserIdQuery(id!);
+  if (isDashboardLoading || isPaymentLoading) return <Loader />
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  const { stats = [], spendingHistory = [] } = dashboardData?.data || {}
+  const payments = paymentData?.data || []
+
+  // Find the "Total Paid Amount" from stats array
+  const totalPaid = stats.find((s: any) => s.title.includes("Paid Amount"))?.value || "$0"
 
   return (
-    <div className="space-y-6 px-4 py-6">
-      {/* ===== 🔹 Page Header ===== */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <h1 className="text-3xl font-bold text-foreground">Payments</h1>
+    <div className="p-4 md:p-8 space-y-10 min-h-screen">
+      {/* ===== Header Section ===== */}
+      <DashboardSectionHeader 
+        title="My Payments"
+        subtitle="Review your payment history and invoices."
+        icon={CreditCard}
+        badge="Account History"
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="lg:col-span-1">
+          <Card className="glass-panel border-royal-gold/10 shadow-sm dark:shadow-none bg-royal-gold/5 h-full relative overflow-hidden group">
+            <CardHeader className="pb-2">
+               <span className="text-[10px] uppercase tracking-[0.2em] text-accent-foreground font-bold">Total Paid</span>
+            </CardHeader>
+            <CardContent>
+               <div className="text-4xl font-[var(--font-cinzel)] font-bold text-foreground mb-1">{totalPaid}</div>
+               <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">All-time confirmed stays</p>
+               <DollarSign className="absolute top-6 right-6 w-12 h-12 text-royal-gold/10 group-hover:text-royal-gold/20 transition-colors" />
+               
+               <div className="mt-8 pt-6 border-t border-royal-gold/5 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Active Stays</span>
+                    <span className="text-sm font-bold text-royal-gold">{payments.filter((p: any) => p.status === 'SUCCESS').length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Invoices</span>
+                    <span className="text-sm font-bold text-royal-gold">{payments.length}</span>
+                  </div>
+               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        <div className="lg:col-span-2">
+           <DashboardChart 
+              title="Lunar Spending History"
+              description="Monthly overview of your luxury investments"
+              icon={TrendingUp}
+              data={spendingHistory}
+              type="bar"
+              dataKey="amount"
+              xAxisKey="month"
+              prefix="$"
+           />
+        </div>
       </div>
 
-      {/* ===== 🔹 Payments Table ===== */}
-      <Card className="bg-main border border-slate-700 shadow-md rounded-xl">
-        <CardHeader>
-          <CardTitle className="text-foreground">Recent Payments</CardTitle>
+      <Card className="glass-panel border-royal-gold/10 shadow-sm dark:shadow-none p-0 overflow-hidden">
+        <CardHeader className="bg-royal-gold/5 border-b border-royal-gold/10 p-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+               <div>
+                  <CardTitle className="text-lg font-[var(--font-cinzel)] font-bold text-foreground">Transaction History</CardTitle>
+                  <CardDescription className="text-muted-foreground text-[10px] uppercase tracking-widest font-bold mt-1">Confirmed Records</CardDescription>
+               </div>
+               <button className="h-10 px-6 border border-royal-gold/20 text-[10px] font-bold uppercase tracking-widest text-foreground hover:bg-royal-gold/10 transition-all flex items-center gap-2">
+                  <Download className="w-3 h-3" /> EXPORT ALL DATA
+               </button>
+            </div>
         </CardHeader>
-        <CardContent className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-[#2a2d38] text-white">
-              <TableRow>
-                {['Transaction ID', 'Amount', 'Method', 'Status', 'Date'].map(
-                  (head) => (
-                    <TableHead
-                      key={head}
-                      className="text-white border border-slate-700"
+        <CardContent className="p-0">
+           <div className="overflow-x-auto">
+             <Table>
+               <TableHeader>
+                 <TableRow className="bg-royal-gold/5 border-b border-royal-gold/10 hover:bg-royal-gold/5">
+                   <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5">Reference ID</TableHead>
+                   <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5">Date</TableHead>
+                   <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-right">Amount</TableHead>
+                   <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-center">Status</TableHead>
+                   <TableHead className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground px-8 py-5 text-right">Action</TableHead>
+                 </TableRow>
+               </TableHeader>
+               <TableBody>
+                 {payments.length === 0 ? (
+                   <tr>
+                     <td colSpan={5} className="p-20 text-center text-muted-foreground italic">No historical invoices found.</td>
+                   </tr>
+                 ) : (
+                   payments.map((payment: any, idx: number) => (
+                    <motion.tr
+                      key={payment._id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="border-b border-royal-gold/5 hover:bg-royal-gold/5 transition-colors group"
                     >
-                      {head}
-                    </TableHead>
-                  ),
-                )}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {paymentsData?.data?.length === 0 && (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center p-4 text-foreground border border-slate-700"
-                  >
-                    No payments found.
-                  </TableCell>
-                </TableRow>
-              )}
-              {paymentsData?.data?.map((payment: any) => (
-                <TableRow
-                  key={payment._id}
-                  className="border border-slate-700 hover:bg-slate-800/50 transition"
-                >
-                  <TableCell className="text-foreground border border-slate-700">
-                    {payment.transactionId}
-                  </TableCell>
-
-                  <TableCell className="text-green-400 font-semibold border border-slate-700">
-                    ${payment.amount}
-                  </TableCell>
-                  <TableCell className="text-foreground border border-slate-700">
-                    {payment.paymentMethod}
-                  </TableCell>
-                  <TableCell className="border border-slate-700">
-                    <Badge
-                      className={`text-white capitalize ${
-                        statusColorMap[payment.status] || 'bg-gray-600'
-                      }`}
-                    >
-                      {payment.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-foreground border border-slate-700">
-                    {new Date(payment.createdAt).toLocaleDateString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                      <TableCell className="px-8 py-5">
+                         <span className="text-xs font-mono text-royal-gold/80">{payment.transactionId}</span>
+                      </TableCell>
+                      <TableCell className="px-8 py-5">
+                         <span className="text-xs font-medium text-muted-foreground">{new Date(payment.createdAt).toLocaleDateString()}</span>
+                      </TableCell>
+                      <TableCell className="px-8 py-5 text-right font-[var(--font-cinzel)] font-bold text-foreground">
+                        ${payment.amount.toFixed(2)}
+                      </TableCell>
+                      <TableCell className="px-8 py-5 text-center">
+                        <Badge
+                          variant="outline"
+                          className={`text-[9px] uppercase tracking-widest px-2 py-0.5 border-royal-gold/20 text-royal-gold bg-royal-gold/5 ${
+                            payment.status === 'SUCCESS' 
+                              ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' 
+                              : payment.status === 'FAILED'
+                                ? 'border-rose-500/30 text-rose-500 bg-rose-500/5'
+                                : ''
+                          }`}
+                        >
+                          {payment.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="px-8 py-5 text-right">
+                         <button className="text-[9px] font-bold uppercase tracking-widest text-foreground hover:text-royal-gold transition-colors flex items-center gap-2 ml-auto">
+                            <Receipt className="w-3 h-3" /> INVOICE
+                         </button>
+                      </TableCell>
+                    </motion.tr>
+                   ))
+                 )}
+               </TableBody>
+             </Table>
+           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

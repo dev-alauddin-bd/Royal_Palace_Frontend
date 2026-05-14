@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { LucideIcon } from 'lucide-react';
+import { LucideIcon, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 interface DashboardTableProps {
   title: string;
@@ -22,32 +23,32 @@ const DashboardTable: React.FC<DashboardTableProps> = ({
   viewAllLink,
 }) => {
   return (
-    <Card className="glass-panel border-white/5 overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="glass-panel border-royal-gold/10 overflow-hidden shadow-sm dark:shadow-none h-full">
+      <CardHeader className="flex flex-row items-center justify-between pb-6 border-b border-royal-gold/5">
         <div className="space-y-1">
-          <CardTitle className="text-lg font-serif text-white flex items-center gap-3">
+          <CardTitle className="text-lg font-[var(--font-cinzel)] text-foreground flex items-center gap-3">
             {Icon && <Icon className="h-5 w-5 text-royal-gold" />}
             {title}
           </CardTitle>
           {description && (
-            <CardDescription className="text-white/40 text-xs uppercase tracking-widest">
+            <CardDescription className="text-muted-foreground text-[10px] uppercase tracking-[0.2em] font-bold">
               {description}
             </CardDescription>
           )}
         </div>
         {viewAllLink && (
-          <a
+          <Link
             href={viewAllLink}
-            className="text-[10px] text-royal-gold uppercase tracking-[0.3em] font-bold hover:text-white transition-colors"
+            className="text-[10px] text-royal-gold uppercase tracking-[0.2em] font-bold hover:text-foreground flex items-center gap-2 transition-all group"
           >
-            View All
-          </a>
+            View All <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+          </Link>
         )}
       </CardHeader>
       <CardContent className="p-0 overflow-x-auto">
-        <table className="min-w-full">
+        <table className="w-full border-collapse">
           <thead>
-            <tr className="bg-white/5 text-[10px] uppercase tracking-[0.2em] font-bold text-royal-gold/60 border-b border-white/5">
+            <tr className="bg-royal-gold/5 text-[10px] uppercase tracking-[0.2em] font-bold text-accent-foreground border-b border-royal-gold/10">
               {headers.map((header) => (
                 <th key={header} className="px-8 py-5 text-left font-bold">
                   {header}
@@ -55,7 +56,9 @@ const DashboardTable: React.FC<DashboardTableProps> = ({
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">{children}</tbody>
+          <tbody className="divide-y divide-royal-gold/5">
+            {children}
+          </tbody>
         </table>
       </CardContent>
     </Card>

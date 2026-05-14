@@ -14,6 +14,11 @@ export enum BedType {
   Double = 'double',
   Single = 'single',
 }
+export enum RoomStatus {
+  Active = 'active',
+  Maintenance = 'maintenance',
+  Inactive = 'inactive',
+}
 
 export interface IRoom {
   _id: string;
@@ -25,6 +30,7 @@ export interface IRoom {
   type: RoomType;
   features: string[];
   price: number;
+  roomStatus?: RoomStatus;
   bed: {
     type: BedType;
     count: number;
