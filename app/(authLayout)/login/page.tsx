@@ -138,29 +138,27 @@ export default function LoginPage() {
     switch (role) {
       case "guest":
         email =
-          process.env.NEXT_PUBLIC_GUEST_EMAIL || "guest@example.com"
+          process.env.NEXT_PUBLIC_GUEST_EMAIL!
 
         password =
-          process.env.NEXT_PUBLIC_GUEST_PASSWORD || "guest123"
+          process.env.NEXT_PUBLIC_GUEST_PASSWORD!
         break
 
       case "receptionist":
         email =
-          process.env.NEXT_PUBLIC_RECEPTIONIST_EMAIL ||
-          "reception@royalpalace.com"
+          process.env.NEXT_PUBLIC_RECEPTIONIST_EMAIL!
 
         password =
-          process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD ||
-          "reception123"
+          process.env.NEXT_PUBLIC_RECEPTIONIST_PASSWORD!
         break
 
       case "admin":
         email =
-          process.env.NEXT_PUBLIC_ADMIN_EMAIL ||
-          "admin@royalpalace.com"
+          process.env.NEXT_PUBLIC_ADMIN_EMAIL!
+
 
         password =
-          process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "admin123"
+          process.env.NEXT_PUBLIC_ADMIN_PASSWORD!
         break
     }
 
